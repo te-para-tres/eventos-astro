@@ -1,3 +1,25 @@
+@import "tailwindcss";
+@import "./colors.css";
+
+@theme {
+    --color-primary: var(--primary-color);
+    --color-primary-hover: var(--primary-hover);
+    --color-secondary: var(--secondary-color);
+
+    --color-accent-emerald: var(--accent-emerald);
+    --color-accent-amber: var(--accent-amber);
+
+    --color-text-main: var(--text-main);
+    --color-text-muted: var(--text-muted);
+    --color-text-light: var(--text-light);
+
+    --color-bg-main: var(--bg-main);
+    --color-bg-alt: var(--bg-alt);
+    --color-bg-card: var(--bg-card);
+
+    --color-border-custom: var(--border-color);
+}
+
 .w-full {
     width: 100%;
 }
