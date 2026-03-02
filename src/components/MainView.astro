@@ -1,29 +1,28 @@
 ---
-import Background from "./Background.astro";
 import FiltrosContainer from "../pages/eventos/FiltrosContainer.astro";
 import WebPadding from "./WebPadding.astro";
 import EventCard from "./EventCard.astro";
 ---
 
 <WebPadding>
-  <div id="container">
-    <div id="background">
-      <Background />
-    </div>
+  <div class="py-16 min-h-screen bg-white">
 
-    <header class="page-header">
-      <h1>Próximos Eventos</h1>
-      <p>
+    <header class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">
+        Próximos Eventos
+      </h1>
+
+      <p class="text-lg text-gray-600 max-w-2xl leading-relaxed">
         Explora y únete a las actividades y eventos más recientes en todos los
         planteles de nuestra universidad.
       </p>
     </header>
 
-    <section>
+    <section class="mb-10">
       <FiltrosContainer />
     </section>
 
-    <div class="events-grid">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <EventCard
         title="IA en Ética: Un Seminario Profundo"
         category="Seminario"
@@ -33,15 +32,17 @@ import EventCard from "./EventCard.astro";
         availability="15 Lugares disponibles"
         availabilityColor="emerald"
       />
+
       <EventCard
         title="Final Anual de Basquetbol UES"
         category="Deportes"
         date="15 Oct, 6:00 PM"
         location="Complejo Deportivo"
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuDsg4tDJDEk1L1pKxiz1Q-NQtgaaYOFoyPBhy_snTb9V39PllFqu8sl0fcoWrtEE3fe6EkPjquycYeGDCL2HNUB8doqA1W_G1jK0hZ7sZylHdeBxW0zFv1PFATuzpwQX8NqfAkCf-JxbDYaFsZ-W6CCwjMAu1mylfQsGxa4wqJbBvxBp-y6rYrP_L_8alPV5fa9gT4KCBRzDbwaq_psb5i9OfaNG7dJ9QEdfTBavgmKiXtWp4zm_pZlIsqgcoodyNMLS2MNdT8sA"
+        image="/public/img/image.png"
         availability="50+ Lugares disponibles"
         availabilityColor="emerald"
       />
+
       <EventCard
         title="Tech Connect: Feria de Empleo Otoño"
         category="Feria de Empleo"
@@ -51,6 +52,7 @@ import EventCard from "./EventCard.astro";
         availability="Limitado: 8 libres"
         availabilityColor="amber"
       />
+
       <EventCard
         title="Convivencia de Graduados: Noche Social"
         category="Social"
@@ -62,104 +64,16 @@ import EventCard from "./EventCard.astro";
       />
     </div>
 
-    <div class="load-more-container">
-      <button class="load-more-btn">
+    <div class="mt-16 flex flex-col items-center gap-4">
+      <button class="border-2 border-primary text-primary font-semibold px-8 py-3 rounded-xl flex items-center gap-2 transition hover:bg-primary hover:text-white hover:-translate-y-0.5 hover:cursor-pointer">
         Cargar más eventos
-        <span class="material-symbols-outlined">expand_more</span>
+        <i class="fa-solid fa-chevron-down text-sm"></i>
       </button>
-      <p class="stats">Mostrando 4 de 42 eventos</p>
+
+      <p class="text-sm text-gray-500 font-medium">
+        Mostrando 4 de 42 eventos
+      </p>
     </div>
+
   </div>
 </WebPadding>
-
-<style>
-  #container {
-    padding: 4rem 0;
-    min-height: 100vh;
-  }
-
-  #background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 0.25;
-  }
-
-  #background :global(svg) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .page-header h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    color: var(--text-main);
-    letter-spacing: -0.04em;
-    margin-bottom: 1rem;
-    line-height: 1;
-  }
-
-  .page-header p {
-    font-size: 1.125rem;
-    color: var(--text-muted);
-    max-width: 42rem;
-    line-height: 1.6;
-  }
-
-  .events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-
-  .load-more-container {
-    margin-top: 5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .load-more-btn {
-    background-color: var(--bg-alt);
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 1rem 3rem;
-    border-radius: 0.75rem;
-    font-weight: 700;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .load-more-btn:hover {
-    background-color: var(--primary-color);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  .stats {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-muted);
-  }
-
-  @media (max-width: 768px) {
-    .page-header h1 {
-      font-size: 2.25rem;
-    }
-  }
-</style>
