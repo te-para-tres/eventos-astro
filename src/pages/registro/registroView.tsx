@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { registroSchema } from "../../shemas/registroSchema";
-import { supabase } from "../../lib/supabase";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 
 interface ErroresI {
@@ -12,58 +11,6 @@ const RegistroView: React.FC = () => {
   const [cargando, setCargando] = useState<boolean>(false);
   const [errores, setErrores] = useState<ErroresI>();
 
-  const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      setCargando(true);
-      setErrores(undefined);
-
-      const formData = Object.fromEntries(new FormData(e.currentTarget));
-      const registro = await registroSchema.safeParse(formData);
-
-      if (!registro.success) {
-        const errores: ErroresI = {
-          correo: registro.error.flatten().fieldErrors.correo?.[0],
-          clave: registro.error.flatten().fieldErrors.clave?.[0],
-        }
-        setErrores(errores);
-        return;
-      }
-
-      const { error } = await supabase.auth.signUp({
-        email: registro.data.correo,
-        password: registro.data.clave,
-      });
-
-      if (error) {
-        setErrores({ correo: error.message });
-        return;
-      }
-
-      navigate("/iniciar-sesion");
-
-    } catch (error) {
-      // return new Response(error, { status: 500 });
-    } finally {
-      setCargando(false);
-    }
-  }, [])
-
-  const verificarUsuario = async () => {
-    const { data, error } = await supabase.auth.getUser();
-
-    if (error || !data) return;
-
-    if (data.user.confirmed_at) {
-      navigate("/dashboard");
-    }
-
-  }
-
-  useEffect(() => {
-    verificarUsuario();
-  }, [])
-
   return (
     <main className="grid grid-cols-1 md:grid-cols-[minmax(280px,1fr)_minmax(320px,520px)] w-full min-h-[calc(100vh-100px)] bg-bg-alt shadow-[0_20px_50px_rgba(17,24,39,0.12)] bg-[radial-gradient(circle_at_20%_20%,rgba(139,28,40,0.12),transparent_45%),radial-gradient(circle_at_90%_90%,rgba(59,130,246,0.1),transparent_35%)]">
       <section className="flex flex-col justify-center items-start p-8 md:p-16 text-text-light bg-[linear-gradient(78deg,rgba(133,64,64,1)_16%,rgba(150,112,111,1)_54%,rgba(133,64,64,1)_100%)]">
@@ -72,7 +19,7 @@ const RegistroView: React.FC = () => {
           Explora los eventos mas relevantes de la Universidad Estatal de Sonora
         </p>
       </section>
-      <form onSubmit={onSubmit} className="flex flex-col justify-start gap-1 p-8 md:p-12 bg-bg-card">
+      <form className="flex flex-col justify-start gap-1 p-8 md:p-12 bg-bg-card">
         <p className="mb-2 text-[0.92rem] text-text-muted">
           ¿Ya tienes una cuenta?{" "}
           <a className="text-primary font-semibold no-underline hover:text-primary-hover hover:underline transition-colors" href="/iniciar-sesion">
