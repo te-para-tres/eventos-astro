@@ -2,6 +2,8 @@
 interface Props {
   title: string;
   category: string;
+  descripcion: string;
+  estatus: string;
   date: string;
   location: string;
   image: string;
@@ -12,6 +14,8 @@ interface Props {
 const {
   title,
   category,
+  descripcion,
+  estatus,
   date,
   location,
   image,
@@ -20,7 +24,8 @@ const {
 } = Astro.props;
 ---
 
-<div
+<a
+  href="/eventos"
   class="bg-bg-alt border border-border-custom rounded-xl overflow-hidden flex flex-col transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 group"
 >
   <div class="relative h-52 overflow-hidden">
@@ -30,28 +35,39 @@ const {
       class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
     />
     <div class="absolute top-4 left-4 flex items-center gap-2">
-  <div class="px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md bg-primary text-white">
-    {category}
-  </div>
-
-  <div
-    class={`px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md text-white ${
-      availabilityColor === "emerald"
-        ? "bg-accent-emerald"
-        : "bg-accent-amber"
-    }`}
-  >
-    {availability}
-  </div>
-</div>
+      <div
+        class={`px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md text-white ${
+          availabilityColor === "emerald"
+            ? "bg-accent-emerald"
+            : "bg-accent-amber"
+        }`}
+      >
+        {availability}
+      </div>
+    </div>
   </div>
   <div class="p-6 flex flex-col grow">
     <h3
-      class="text-xl font-bold text-text-main leading-tight mb-4 transition-colors duration-200 group-hover:text-primary"
+      class="text-xl font-bold text-text-main leading-tight mb-2 transition-colors duration-200 group-hover:text-primary"
     >
       {title}
     </h3>
+    <p class="text-sm text-text-muted leading-relaxed mb-4 line-clamp-2">
+      {descripcion}
+    </p>
     <div class="mt-auto flex flex-col gap-3">
+      <div class="flex items-center gap-2 text-xs font-semibold">
+        <span class="material-symbols-outlined text-base text-primary"
+          >info</span
+        >
+        <span class="text-text-muted">{estatus}</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs font-semibold">
+        <span class="material-symbols-outlined text-base text-primary"
+          >category</span
+        >
+        <span class="text-text-muted">{category}</span>
+      </div>
       <div class="flex items-center gap-3 text-sm text-text-muted">
         <span class="material-symbols-outlined text-xl text-primary">
           schedule
@@ -65,10 +81,5 @@ const {
         <span>{location}</span>
       </div>
     </div>
-    <button
-      class="mt-6 w-full p-2.5 bg-transparent border-2 border-primary text-primary rounded-lg text-sm font-bold transition-all duration-200 hover:bg-primary hover:text-white hover:cursor-pointer"
-    >
-      Ver Detalles
-    </button>
   </div>
-</div>
+</a>

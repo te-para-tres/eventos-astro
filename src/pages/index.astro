@@ -1,8 +1,237 @@
 ---
-import Main from "../components/MainView.astro";
+import EventCard from "../components/EventCard.astro";
+import FiltrosContainer from "../components/FiltrosContainer.astro";
 import Layout from "../layouts/Layout.astro";
+
+const img1 = "https://lh3.googleusercontent.com/aida-public/AB6AXuCw9OQKmd4EtyO4PfgSh2D5OLffvTN1dkZ0Xplq1rCO7NflOMdKJkzneOOvIi843e309t4I4LpIuuI0kF5D-oiLSWJqPyJ2NK8x8FfhZW3idaLhLRjo1GvbqhNc9ULX-GR5M7qY0vK5bg-IcafsnuteoyMZEvF60O2cVN66U-lCb3_XeMmy5hWk64Jp3VDAn3hi6vTNlYNFt2zsnXbO_gHXWQd8byLs7n83ZpB8KN1dQ4-cgSDLMsmDuv4VWQYDO2l0QjiFXavZ-g";
+const img2 = "https://lh3.googleusercontent.com/aida-public/AB6AXuCj2tWOnL1OeSM0aCK8tIk9-YKWcTSQTWUO7E0-mwqeAZ9ik7C1ESM7LbyPKpK_9fNoHbsMnVF_RJQU2v-xCnzMJBTvD09_IzcpSZnaHDSVS7KD6Nu0CSvV_isYpUbe97Y-KFGff34uBcMx22a9ATyHgaduUFA3rjAm_5mjLuo5DSfKv3V9F8bCC4FZKLbXx2lQDx3VFJCxcG939bdxTn4qrbTpBEhUvP34AS4hhw-WJskFA_HiVP2PrnlM63OmcGr-MLtE4mViGg";
+const img3 = "https://lh3.googleusercontent.com/aida-public/AB6AXuAnjK_isGZD8ZdqR-Rrdyd6uPPCFPUY8HFoELe8JBEt8etwLsniUJV2-QZXy-K6ld3cjcFpnK5hDDc5OaQbB6nprfPVneQOxz22tnrmzpV_8R5N3R1aa20Mi2cQA3Wc3_oKDZvWKGwp4M3mCMaAd82VJ-XLq4-TzsS4wii9Ss5ZKx8XfWBYAO-mTPt5d62seq0dbJg3YYtbsSVPKx-RJFUrFUtvBGhLG9Jn7o5XuSPSMmFWo_o15s4zHjzvsDqc6sGdQ-3fRR5JCA";
+const img4 = "/public/img/image.png";
+
+const eventos = [
+  {
+    title: "IA en Ética: Un Seminario Profundo",
+    category: "Seminario",
+    descripcion: "Explora los dilemas éticos del uso de inteligencia artificial en la sociedad moderna y sus implicaciones.",
+    estatus: "Inscripciones abiertas",
+    date: "12 Oct, 2:00 PM - 4:00 PM",
+    location: "Campus Hermosillo, Aula 402",
+    image: img1,
+    availability: "15 Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Final Anual de Basquetbol UES",
+    category: "Deportes",
+    descripcion: "La gran final del torneo interfacultades con los mejores equipos de todos los planteles.",
+    estatus: "Acceso libre",
+    date: "15 Oct, 6:00 PM",
+    location: "Complejo Deportivo",
+    image: img4,
+    availability: "50+ Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Tech Connect: Feria de Empleo Otoño",
+    category: "Feria de Empleo",
+    descripcion: "Conecta con más de 40 empresas líderes en tecnología buscando talento universitario.",
+    estatus: "Cupo limitado",
+    date: "18 Oct, 10:00 AM - 4:00 PM",
+    location: "Campus Navojoa, Sala de Exposiciones",
+    image: img2,
+    availability: "Limitado: 8 libres",
+    availabilityColor: "amber" as const,
+  },
+  {
+    title: "Convivencia de Graduados: Noche Social",
+    category: "Social",
+    descripcion: "Reencuentro anual de egresados para celebrar los logros y fortalecer la red de alumni UES.",
+    estatus: "Inscripciones abiertas",
+    date: "20 Oct, 7:30 PM",
+    location: "Centro de Estudiantes",
+    image: img3,
+    availability: "100+ Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Taller de Programación Web con Astro",
+    category: "Taller",
+    descripcion: "Aprende a construir sitios web modernos y rápidos utilizando el framework Astro desde cero.",
+    estatus: "Inscripciones abiertas",
+    date: "22 Oct, 9:00 AM - 1:00 PM",
+    location: "Campus Hermosillo, Lab de Cómputo 3",
+    image: img1,
+    availability: "20 Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Conferencia sobre Sustentabilidad",
+    category: "Conferencia",
+    descripcion: "Ponentes nacionales e internacionales discutirán estrategias para un campus más sustentable.",
+    estatus: "Inscripciones abiertas",
+    date: "24 Oct, 11:00 AM - 1:00 PM",
+    location: "Auditorio Principal, Campus Obregón",
+    image: img2,
+    availability: "80 Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Exposición de Arte Contemporáneo",
+    category: "Cultural",
+    descripcion: "Muestra de obra plástica de estudiantes y profesores del área de humanidades y diseño.",
+    estatus: "Acceso libre",
+    date: "25 Oct - 1 Nov",
+    location: "Galería UES, Campus Hermosillo",
+    image: img3,
+    availability: "Sin límite de cupo",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Torneo Interfacultades de Fútbol",
+    category: "Deportes",
+    descripcion: "Competencia deportiva entre equipos representativos de cada facultad universitaria.",
+    estatus: "Registro de equipos abierto",
+    date: "26 Oct, 8:00 AM",
+    location: "Canchas Deportivas UES",
+    image: img4,
+    availability: "12 Equipos disponibles",
+    availabilityColor: "amber" as const,
+  },
+  {
+    title: "Simposio de Medicina Preventiva",
+    category: "Académico",
+    descripcion: "Especialistas de salud pública presentarán avances en prevención de enfermedades crónicas.",
+    estatus: "Inscripciones abiertas",
+    date: "28 Oct, 9:00 AM - 5:00 PM",
+    location: "Campus Guaymas, Aula Magna",
+    image: img1,
+    availability: "40 Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Taller de Emprendimiento Estudiantil",
+    category: "Taller",
+    descripcion: "Desarrolla las habilidades clave para lanzar tu startup con mentoría de emprendedores exitosos.",
+    estatus: "Cupo limitado",
+    date: "29 Oct, 3:00 PM - 6:00 PM",
+    location: "Incubadora UES, Campus Hermosillo",
+    image: img2,
+    availability: "Limitado: 5 libres",
+    availabilityColor: "amber" as const,
+  },
+  {
+    title: "Congreso de Ingeniería Industrial",
+    category: "Académico",
+    descripcion: "Presentación de proyectos de investigación aplicada en manufactura, logística y procesos.",
+    estatus: "Inscripciones abiertas",
+    date: "31 Oct, 8:00 AM - 6:00 PM",
+    location: "Campus Navojoa, Centro de Convenciones",
+    image: img3,
+    availability: "60 Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Feria de Ciencias UES 2024",
+    category: "Académico",
+    descripcion: "Estudiantes de todos los niveles presentan proyectos científicos en una feria abierta al público.",
+    estatus: "Acceso libre",
+    date: "2 Nov, 10:00 AM - 4:00 PM",
+    location: "Explanada Central, Campus Obregón",
+    image: img4,
+    availability: "Sin límite de cupo",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Festival de Música Universitaria",
+    category: "Cultural",
+    descripcion: "Bandas y solistas universitarios se presentan en un festival al aire libre lleno de talento.",
+    estatus: "Acceso libre",
+    date: "5 Nov, 5:00 PM - 10:00 PM",
+    location: "Plaza Universitaria, Campus Hermosillo",
+    image: img1,
+    availability: "Sin límite de cupo",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Hackathon UES 2024",
+    category: "Tecnología",
+    descripcion: "48 horas para desarrollar soluciones tecnológicas a retos reales con premios en efectivo.",
+    estatus: "Inscripciones abiertas",
+    date: "8-9 Nov, 9:00 AM",
+    location: "Lab de Innovación, Campus Hermosillo",
+    image: img2,
+    availability: "30 Equipos disponibles",
+    availabilityColor: "emerald" as const,
+  },
+  {
+    title: "Curso de Primeros Auxilios",
+    category: "Taller",
+    descripcion: "Capacitación práctica certificada en primeros auxilios, RCP y manejo de emergencias básicas.",
+    estatus: "Cupo limitado",
+    date: "10 Nov, 9:00 AM - 2:00 PM",
+    location: "Clínica UES, Campus Obregón",
+    image: img3,
+    availability: "Limitado: 10 libres",
+    availabilityColor: "amber" as const,
+  },
+  {
+    title: "Gala Anual de Premiación UES",
+    category: "Social",
+    descripcion: "Ceremonia de reconocimiento a los estudiantes y docentes destacados del ciclo escolar 2024.",
+    estatus: "Invitación requerida",
+    date: "15 Nov, 7:00 PM",
+    location: "Salón de Honor, Campus Hermosillo",
+    image: img4,
+    availability: "200 Lugares disponibles",
+    availabilityColor: "emerald" as const,
+  },
+];
 ---
 
 <Layout title="Tablero de Eventos">
-	<Main />
+  <div class="p-12 min-h-screen bg-white">
+    <header class="mb-12">
+      <h1
+        class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4"
+      >
+        Próximos Eventos
+      </h1>
+
+      <p class="text-lg text-gray-600 max-w-2xl leading-relaxed">
+        Explora y únete a las actividades y eventos más recientes en todos los
+        planteles de nuestra universidad.
+      </p>
+    </header>
+
+    <section class="mb-10">
+      <FiltrosContainer />
+    </section>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {eventos.map((evento) => (
+        <EventCard
+          title={evento.title}
+          category={evento.category}
+          descripcion={evento.descripcion}
+          estatus={evento.estatus}
+          date={evento.date}
+          location={evento.location}
+          image={evento.image}
+          availability={evento.availability}
+          availabilityColor={evento.availabilityColor}
+        />
+      ))}
+    </div>
+
+    <div class="mt-16 flex flex-col items-center gap-4">
+      <button
+        class="border-2 border-primary text-primary font-semibold px-8 py-3 rounded-xl flex items-center gap-2 transition hover:bg-primary hover:text-white hover:-translate-y-0.5 hover:cursor-pointer"
+      >
+        Cargar más eventos
+        <i class="fa-solid fa-chevron-down text-sm"></i>
+      </button>
+
+      <p class="text-sm text-gray-500 font-medium">Mostrando 16 de 42 eventos</p>
+    </div>
+  </div>
 </Layout>
