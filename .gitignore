@@ -29,7 +29,6 @@ pnpm-debug.log*
 .idea/
 
 # Agent tools
-.agents/
 .windsurf/
 .agent/
 
