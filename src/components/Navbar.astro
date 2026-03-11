@@ -2,209 +2,70 @@
 interface Props {
   title: string;
 }
-
 const { title } = Astro.props;
 ---
 
-<div class="top-accent"></div>
-<header id="navbar">
-  <div class="navbar-container">
-    <div class="left-section">
-      <a href="/" class="brand">
-        <div class="logo-box">
-          <span class="material-icons">school</span>
+<div
+  class="h-[3px] w-full bg-[linear-gradient(90deg,var(--color-primary)_0%,var(--color-primary-hover)_35%,#c4445f_50%,var(--color-primary-hover)_65%,var(--color-primary)_100%)] bg-[size:250%_auto] animate-[shimmer_5s_linear_infinite]"
+>
+</div>
+
+<header
+  class="sticky top-0 z-50 bg-white/88 backdrop-blur-2xl border-b border-border-custom"
+>
+  <div
+    class="max-w-7xl w-full mx-auto px-6 h-[66px] flex justify-between items-center"
+  >
+    <div class="flex items-center gap-5">
+      <a href="/" class="group flex items-center gap-3 no-underline">
+        <div
+          class="bg-primary rounded-lg p-[0.42rem] flex items-center justify-center text-white transition-all duration-[180ms] group-hover:bg-primary-hover group-hover:shadow-[0_4px_12px_rgba(123,22,62,0.28)]"
+        >
+          <span class="material-icons" style="font-size: 1.15rem;">school</span>
         </div>
-        <div class="logo-text">
-          <span class="ues-text">UES</span>
-          <span class="sub-text">Universidad Estatal de Sonora</span>
+        <div class="flex flex-col">
+          <span
+            class="text-[1.28rem] font-black tracking-tight text-primary leading-none"
+          >
+            UES
+          </span>
+          <span
+            class="text-[8.5px] font-semibold text-text-muted uppercase tracking-[0.13em] leading-none mt-[3px]"
+          >
+            Universidad Estatal <br /> de Sonora
+          </span>
         </div>
       </a>
-      <div class="title">
-        <h1 class="title-text">{title}</h1>
-      </div>
+
+      {
+        title && (
+          <div class="hidden md:flex items-center pl-5 border-l border-border-custom">
+            <h1 class="text-[0.88rem] font-medium text-text-muted">{title}</h1>
+          </div>
+        )
+      }
     </div>
-    <section>
-      <div class="nav-links">
-        <i class="fa-solid fa-bell nav-icon"></i>
-        <a href="/iniciar-sesion" class="btn-login">
-          <i class="fa-solid fa-user"></i>
-          Iniciar Sesión
-        </a>
-      </div>
-    </section>
+
+    <nav class="flex items-center gap-1">
+      <a
+        href="/soporte"
+        class="relative flex items-center gap-1.5 px-3 py-[0.45rem] text-[0.82rem] font-medium text-text-muted transition-colors duration-200 hover:text-text-main after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[1.5px] after:bg-primary after:rounded-sm after:[transition:width_0.22s_ease,left_0.22s_ease] hover:after:w-full hover:after:left-0"
+      >
+        <i class="fa-regular fa-circle-question" style="font-size: 0.8rem;"></i>
+        <span>Soporte</span>
+      </a>
+
+      <span class="w-px h-4 bg-border-custom mx-1.5 block"></span>
+
+      <a
+        href="/iniciar-sesion"
+        class="flex items-center gap-2 bg-primary px-4 py-[0.48rem] rounded-lg text-white text-[0.82rem] font-semibold transition-all duration-200 hover:bg-primary-hover hover:shadow-[0_4px_14px_rgba(123,22,62,0.3)] hover:-translate-y-px active:translate-y-0 active:shadow-none"
+      >
+        <i
+          class="fa-solid fa-arrow-right-to-bracket"
+          style="font-size: 0.78rem;"></i>
+        <span>Iniciar sesión</span>
+      </a>
+    </nav>
   </div>
 </header>
-
-<style>
-  .btn-login {
-    background-color: var(--primary-color);
-    width: 100%;
-    height: 100%;
-    border-radius: 4px;
-    color: white;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .btn-login i {
-    font-size: 1rem;
-  }
-
-  .btn-login:hover {
-    background-color: var(--primary-hover);
-    color: var(--text-main);
-    border: 2px solid var(--primary-color);
-    transition: all 0.3s ease;
-    box-shadow: 3px var(--shadow-md);
-    cursor: pointer;
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .top-accent {
-    border-radius: 12px;
-    height: 4px;
-    background: linear-gradient(
-      90deg,
-      var(--primary-color) 0%,
-      var(--primary-hover) 100%
-    );
-    width: 100%;
-  }
-
-  #navbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
-    height: 80px;
-    display: flex;
-    align-items: center;
-  }
-
-  .navbar-container {
-    max-width: 1280px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .left-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-  }
-
-  .logo-box {
-    background-color: var(--primary-color);
-    padding: 0.5rem;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-  }
-
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ues-text {
-    font-size: 1.5rem;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    color: var(--primary-color);
-    line-height: 1;
-  }
-
-  .sub-text {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    line-height: 1;
-    margin-top: 4px;
-  }
-
-  .divider {
-    height: 32px;
-    width: 1px;
-    background-color: var(--border-color);
-    margin: 0 0.5rem;
-  }
-
-  .page-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-main);
-  }
-
-  .right-section {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .support-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-
-  .support-btn:hover {
-    color: var(--primary-color);
-  }
-
-  .login-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 0.625rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 0.875rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: inherit;
-    font-size: 0.95rem;
-    text-decoration: none;
-  }
-
-  .login-btn:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
-
-  @media (max-width: 768px) {
-    .divider,
-    .page-title,
-    .support-btn {
-      display: none;
-    }
-  }
-</style>

@@ -28,5 +28,10 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# Agent tools
+.agents/
+.windsurf/
+.agent/
+
 yarn.lock
 .firebase
