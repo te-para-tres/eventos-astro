@@ -1,25 +1,31 @@
 @import "tailwindcss";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @keyframes shimmer {
-  0%   { background-position: 200% center; }
-  100% { background-position: -200% center; }
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
 }
 
 @theme {
-    --color-primary: #7b163e;
-    --color-primary-hover: #a01a4d;
-    --color-secondary: #1a202c;
+  --color-primary: #7b163e;
+  --color-primary-hover: #a01a4d;
+  --color-secondary: #1a202c;
 
-    --color-accent-emerald: #059669;
-    --color-accent-amber: #d97706;
+  --color-accent-emerald: #059669;
+  --color-accent-amber: #d97706;
 
-    --color-text-main: #0f172a;
-    --color-text-muted: #64748b;
-    --color-text-light: #f8fafc;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-text-light: #f8fafc;
 
-    --color-bg-main: #f8f9fa;
-    --color-bg-alt: #ffffff;
-    --color-bg-card: #ffffff;
+  --color-bg-main: #f8f9fa;
+  --color-bg-alt: #ffffff;
+  --color-bg-card: #ffffff;
 
-    --color-border-custom: #e2e8f0;
+  --color-border-custom: #e2e8f0;
 }
