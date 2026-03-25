@@ -6,7 +6,7 @@ const { title } = Astro.props;
 ---
 
 <div
-  class="h-[3px] w-full bg-[linear-gradient(90deg,var(--color-primary)_0%,var(--color-primary-hover)_35%,#c4445f_50%,var(--color-primary-hover)_65%,var(--color-primary)_100%)] bg-[size:250%_auto] animate-[shimmer_5s_linear_infinite]"
+  class="h-0.75 w-full bg-[linear-gradient(90deg,var(--color-primary)_0%,var(--color-primary-hover)_35%,#c4445f_50%,var(--color-primary-hover)_65%,var(--color-primary)_100%)] bg-size-[250%_auto] animate-[shimmer_5s_linear_infinite]"
 >
 </div>
 
@@ -14,12 +14,12 @@ const { title } = Astro.props;
   class="sticky top-0 z-50 bg-white/88 backdrop-blur-2xl border-b border-border-custom"
 >
   <div
-    class="max-w-7xl w-full mx-auto px-6 h-[66px] flex justify-between items-center"
+    class="max-w-7xl w-full mx-auto px-6 h-16.5 flex justify-between items-center"
   >
     <div class="flex items-center gap-5">
       <a href="/" class="group flex items-center gap-3 no-underline">
         <div
-          class="bg-primary rounded-lg p-[0.42rem] flex items-center justify-center text-white transition-all duration-[180ms] group-hover:bg-primary-hover group-hover:shadow-[0_4px_12px_rgba(123,22,62,0.28)]"
+          class="bg-primary rounded-lg p-[0.42rem] flex items-center justify-center text-white transition-all duration-180 group-hover:bg-primary-hover group-hover:shadow-[0_4px_12px_rgba(123,22,62,0.28)]"
         >
           <span class="material-icons" style="font-size: 1.15rem;">school</span>
         </div>
@@ -30,7 +30,7 @@ const { title } = Astro.props;
             UES
           </span>
           <span
-            class="text-[8.5px] font-semibold text-text-muted uppercase tracking-[0.13em] leading-none mt-[3px]"
+            class="text-[8.5px] font-semibold text-text-muted uppercase tracking-[0.13em] leading-none mt-0.75"
           >
             Universidad Estatal <br /> de Sonora
           </span>
