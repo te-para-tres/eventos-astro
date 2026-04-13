@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DetalleDepartamento from "./detalle.tsx";
+export function getStaticPaths() {
+  return [
+    { params: { id: "ia" } },
+    { params: { id: "software" } },
+    { params: { id: "redes" } },
+    { params: { id: "industrial" } },
+    { params: { id: "psicologia" } },
+  ];
+}
+
+const { id } = Astro.params;
+--- 
+
+<Layout title="Eventos">
+
+<DetalleDepartamento id={id} client:only="react"/>
+</Layout>

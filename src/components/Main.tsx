@@ -190,6 +190,7 @@ export default function EventosPage() {
           <select value={categoria} onChange={(e) => setCategoria(e.target.value)}
             className="py-3 px-3 bg-gray-50 border rounded-lg cursor-pointer">
             <option>{TODO_CATEGORIA}</option>
+            <option>Feria de Empleo</option>
             <option>Seminario</option>
             <option>Deportes</option>
             <option>Social</option>

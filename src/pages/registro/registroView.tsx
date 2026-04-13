@@ -14,21 +14,16 @@ const RegistroView: React.FC = () => {
   return (
     <main className="min-h-[calc(100vh-100px)] grid grid-cols-1 lg:grid-cols-[45%_55%]">
 
-      {/* ── Panel izquierdo ── */}
-      <section className="relative flex flex-col justify-end overflow-hidden bg-primary px-10 py-14 md:px-14 md:py-20 min-h-[260px] lg:min-h-0">
+      <section className="relative flex flex-col justify-end overflow-hidden bg-primary px-10 py-14 md:px-14 md:py-20 min-h-65 lg:min-h-0">
 
-        {/* Capa de sombra interior superior */}
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(160deg,rgba(0,0,0,0.28)_0%,transparent_55%)]" />
 
-        {/* Círculo decorativo grande — esquina superior derecha */}
-        <div className="pointer-events-none absolute -top-20 -right-20 w-[22rem] h-[22rem] rounded-full border border-white/10" />
-        <div className="pointer-events-none absolute -top-8 -right-8 w-[14rem] h-[14rem] rounded-full border border-white/[0.07]" />
+        <div className="pointer-events-none absolute -top-20 -right-20 w-88 h-88 rounded-full border border-white/10" />
+        <div className="pointer-events-none absolute -top-8 -right-8 w-56 h-56 rounded-full border border-white/[0.07]" />
 
-        {/* Punto de acento — esquina inferior izquierda */}
         <div className="pointer-events-none absolute bottom-12 left-10 w-2 h-2 rounded-full bg-white/30" />
         <div className="pointer-events-none absolute bottom-20 left-14 w-1 h-1 rounded-full bg-white/20" />
 
-        {/* Contenido */}
         <div className="relative z-10 max-w-[36ch]">
           <span className="mb-6 inline-block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/50">
             Universidad Estatal de Sonora
@@ -47,11 +42,9 @@ const RegistroView: React.FC = () => {
         </div>
       </section>
 
-      {/* ── Panel derecho — Formulario ── */}
       <section className="flex items-center justify-center bg-bg-card px-6 py-14 md:px-12 md:py-20">
-        <div className="w-full max-w-[400px]">
+        <div className="w-full max-w-100">
 
-          {/* Cabecera */}
           <div className="mb-9">
             <p className="mb-3 text-[0.83rem] text-text-muted">
               ¿Ya tienes una cuenta?{" "}
@@ -65,13 +58,11 @@ const RegistroView: React.FC = () => {
             <h2 className="text-[1.65rem] font-bold tracking-tight text-text-main">
               Registrarse
             </h2>
-            <div className="mt-2.5 h-[2px] w-7 rounded-full bg-primary" />
+            <div className="mt-2.5 h-0.5 w-7 rounded-full bg-primary" />
           </div>
 
-          {/* Formulario */}
           <form className="flex flex-col gap-5">
 
-            {/* Campo correo */}
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="correo"
@@ -100,7 +91,6 @@ const RegistroView: React.FC = () => {
               )}
             </div>
 
-            {/* Campo contraseña */}
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="clave"
@@ -130,7 +120,6 @@ const RegistroView: React.FC = () => {
               )}
             </div>
 
-            {/* Botón submit */}
             <button
               disabled={cargando}
               type="submit"
