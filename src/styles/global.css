@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@keyframes shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
 @theme {
     --color-primary: #7b163e;
     --color-primary-hover: #a01a4d;

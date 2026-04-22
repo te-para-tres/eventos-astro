@@ -29,16 +29,21 @@ const {
       alt={title}
       class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
     />
-    <div
-      class="absolute top-4 left-4 px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md bg-primary text-white"
-    >
-      {category}
-    </div>
-    <div
-      class={`absolute top-4 right-4 px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md text-white ${availabilityColor === "emerald" ? "bg-accent-emerald" : "bg-accent-amber"}`}
-    >
-      {availability}
-    </div>
+    <div class="absolute top-4 left-4 flex items-center gap-2">
+  <div class="px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md bg-primary text-white">
+    {category}
+  </div>
+
+  <div
+    class={`px-3 py-1.5 rounded text-[0.625rem] font-bold uppercase tracking-widest shadow-md text-white ${
+      availabilityColor === "emerald"
+        ? "bg-accent-emerald"
+        : "bg-accent-amber"
+    }`}
+  >
+    {availability}
+  </div>
+</div>
   </div>
   <div class="p-6 flex flex-col grow">
     <h3
@@ -48,20 +53,20 @@ const {
     </h3>
     <div class="mt-auto flex flex-col gap-3">
       <div class="flex items-center gap-3 text-sm text-text-muted">
-        <span class="material-symbols-outlined !text-xl !text-primary">
+        <span class="material-symbols-outlined text-xl text-primary">
           schedule
         </span>
         <span>{date}</span>
       </div>
       <div class="flex items-center gap-3 text-sm text-text-muted">
-        <span class="material-symbols-outlined !text-xl !text-primary">
+        <span class="material-symbols-outlined text-xl text-primary">
           location_on
         </span>
         <span>{location}</span>
       </div>
     </div>
     <button
-      class="mt-6 w-full p-[0.625rem] bg-transparent border-2 border-primary text-primary rounded-lg text-sm font-bold transition-all duration-200 hover:bg-primary hover:text-white"
+      class="mt-6 w-full p-2.5 bg-transparent border-2 border-primary text-primary rounded-lg text-sm font-bold transition-all duration-200 hover:bg-primary hover:text-white hover:cursor-pointer"
     >
       Ver Detalles
     </button>
