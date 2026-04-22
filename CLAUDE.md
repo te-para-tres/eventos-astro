@@ -12,6 +12,7 @@ yarn astro check  # TypeScript type checking
 ```
 
 Deploy to Firebase Hosting (site: `qeventr`):
+
 ```sh
 yarn build && firebase deploy --only hosting
 ```
@@ -19,6 +20,7 @@ yarn build && firebase deploy --only hosting
 ## Architecture
 
 This is an **Astro 5** project for the Universidad Estatal de Sonora event board, using:
+
 - **React** (islands architecture via `@astrojs/react`)
 - **Tailwind CSS v4** (via `@tailwindcss/vite` plugin, no config file)
 - **Supabase** for authentication and backend
@@ -27,10 +29,11 @@ This is an **Astro 5** project for the Universidad Estatal de Sonora event board
 ### Page Pattern
 
 Every route follows a two-file pattern:
+
 - `src/pages/<route>/index.astro` — Astro shell that wraps the Layout and mounts the React component
 - `src/pages/<route>/<route>View.tsx` — React component rendered with `client:only="react"`
 
-Example: `src/pages/dashboard/index.astro` uses `<DashboardView client:only="react" />`.
+<!-- Example: `src/pages/dashboard/index.astro` uses `<DashboardView client:only="react" />`. -->
 
 Static content (no interactivity needed) uses plain `.astro` components instead of React.
 
@@ -45,12 +48,14 @@ Static content (no interactivity needed) uses plain `.astro` components instead 
 ### Environment Variables
 
 Defined in `.env`. Astro exposes `PUBLIC_` prefixed vars to the client via `import.meta.env`:
+
 - `PUBLIC_SUPABASE_URL`
 - `PUBLIC_SUPABASE_KEY`
 
 ### Tailwind Custom Tokens
 
 All custom colors are defined in `src/styles/global.css` and usable as Tailwind classes:
+
 - `text-primary`, `bg-primary`, `border-primary`, `text-primary-hover`
 - `text-text-main`, `text-text-muted`, `text-text-light`
 - `bg-bg-main`, `bg-bg-alt`, `bg-bg-card`
