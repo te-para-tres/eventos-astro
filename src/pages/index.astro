@@ -1,8 +1,8 @@
 ---
-import Main from "../components/Main.tsx";
+import Main from "./Main.tsx";
 import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Tablero de Eventos Publicos">
-	<Main />
+	<Main client:only="react" />
 </Layout>

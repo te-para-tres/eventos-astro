@@ -1,4 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { http } from "../hooks/http";
+import type {
+  CategoriaResponseItem,
+  UnidadAcademicaResponseItem,
+} from "../models/catalogos.model.ts";
 
 type AvailabilityColor = "emerald" | "amber";
 
@@ -74,6 +79,8 @@ const eventosData: Evento[] = [
 
 const TODO_CAMPUS = "Todos los Campuses";
 const TODO_CATEGORIA = "Todas las Categorías";
+const CATEGORIA_ENDPOINT = "api/categoria-evento";
+const UNIDAD_ACADEMICA_ENDPOINT = "api/unidad-academica";
 
 
 function EventCard({ event }: { event: Evento }) {
@@ -130,6 +137,44 @@ function EventCard({ event }: { event: Evento }) {
   );
 }
 
+type DateFilterPickerProps = {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+};
+
+function DateFilterPicker({ value, onChange, disabled = false }: DateFilterPickerProps) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+          Fecha
+        </span>
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="text-xs font-semibold text-primary transition-all duration-300 hover:text-primary-hover cursor-pointer"
+          >
+            Limpiar
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <i className="fa-regular fa-calendar text-primary"></i>
+        <input
+          type="date"
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+        />
+      </div>
+    </div>
+  );
+}
+
 
 export default function EventosPage() {
   const [campus, setCampus] = useState(TODO_CAMPUS);
@@ -137,6 +182,45 @@ export default function EventosPage() {
   const [fecha, setFecha] = useState("");
   const [resultados, setResultados] = useState(eventosData);
   const [visible, setVisible] = useState(4);
+  const [loadingCatalogos, setLoadingCatalogos] = useState(false);
+  const [categoriasApi, setCategoriasApi] = useState<CategoriaResponseItem[]>([]);
+  const [unidadesAcademicasApi, setUnidadesAcademicasApi] = useState<
+    UnidadAcademicaResponseItem[]
+  >([]);
+
+  const obtenerCategorias = useCallback(async () => {
+    try {
+      const response = await http.get<CategoriaResponseItem[]>(CATEGORIA_ENDPOINT);
+      if (response.status === 200 && Array.isArray(response.resultado)) {
+        setCategoriasApi(response.resultado);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const obtenerUnidadesAcademicas = useCallback(async () => {
+    try {
+      const response = await http.get<UnidadAcademicaResponseItem[]>(
+        UNIDAD_ACADEMICA_ENDPOINT
+      );
+      if (response.status === 200 && Array.isArray(response.resultado)) {
+        setUnidadesAcademicasApi(response.resultado);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const campusDisponibles =
+    unidadesAcademicasApi.length > 0
+      ? unidadesAcademicasApi.map((unidad) => unidad.nombre)
+      : ["Hermosillo", "Navojoa"];
+
+  const categoriasDisponibles =
+    categoriasApi.length > 0
+      ? categoriasApi.map((cat) => cat.nombre)
+      : ["Feria de Empleo", "Seminario", "Deportes", "Social"];
 
   const filtrar = () => {
     const filtrados = eventosData.filter((e) =>
@@ -165,6 +249,17 @@ export default function EventosPage() {
     return () => window.removeEventListener("keydown", handler);
   }, [campus, categoria, fecha]);
 
+  useEffect(() => {
+    const cargarCatalogos = async () => {
+      setLoadingCatalogos(true);
+      console.log("Cargando catálogos...");
+      await Promise.all([obtenerCategorias(), obtenerUnidadesAcademicas()]);
+      setLoadingCatalogos(false);
+    };
+
+    void cargarCatalogos();
+  }, [obtenerCategorias, obtenerUnidadesAcademicas]);
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
 
@@ -180,34 +275,72 @@ export default function EventosPage() {
       <section className="bg-white border-2 border-primary rounded-xl shadow-sm p-6 mb-12">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
-          <select value={campus} onChange={(e) => setCampus(e.target.value)}
-            className="py-3 px-3 bg-gray-50 border rounded-lg cursor-pointer">
-            <option>{TODO_CAMPUS}</option>
-            <option>Hermosillo</option>
-            <option>Navojoa</option>
-          </select>
+          <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
+            <label
+              htmlFor="campus-filter"
+              className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase"
+            >
+              Campus
+            </label>
+            <div className="flex items-center gap-2">
+              <i className="fa-solid fa-school text-primary"></i>
+              <select
+                id="campus-filter"
+                value={campus}
+                onChange={(e) => setCampus(e.target.value)}
+                className="w-full bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer"
+              >
+                <option>{TODO_CAMPUS}</option>
+                {campusDisponibles.map((campusItem) => (
+                  <option key={campusItem} value={campusItem}>
+                    {campusItem}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          <select value={categoria} onChange={(e) => setCategoria(e.target.value)}
-            className="py-3 px-3 bg-gray-50 border rounded-lg cursor-pointer">
-            <option>{TODO_CATEGORIA}</option>
-            <option>Feria de Empleo</option>
-            <option>Seminario</option>
-            <option>Deportes</option>
-            <option>Social</option>
-          </select>
+          <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
+            <label
+              htmlFor="categoria-filter"
+              className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase"
+            >
+              Categoría
+            </label>
+            <div className="flex items-center gap-2">
+              <i className="fa-solid fa-shapes text-primary"></i>
+              <select
+                id="categoria-filter"
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                className="w-full bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer"
+              >
+                <option>{TODO_CATEGORIA}</option>
+                {categoriasDisponibles.map((categoriaItem) => (
+                  <option key={categoriaItem} value={categoriaItem}>
+                    {categoriaItem}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          <input type="date" value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-            className="py-3 px-3 bg-gray-50 border rounded-lg cursor-pointer" />
+          <DateFilterPicker
+            value={fecha}
+            disabled={loadingCatalogos}
+            onChange={setFecha}
+          />
 
           <div className="flex gap-2">
             <button onClick={filtrar}
-              className="w-full bg-primary text-white rounded-lg font-semibold cursor-pointer hover:bg-primary-hover">
+              disabled={loadingCatalogos}
+              className="w-full bg-primary text-white rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed">
               Buscar
             </button>
 
             <button onClick={limpiar}
-              className="w-full bg-gray-100 rounded-lg font-semibold cursor-pointer hover:bg-gray-300">
+              disabled={loadingCatalogos}
+              className="w-full bg-gray-100 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:bg-gray-300 disabled:opacity-60 disabled:cursor-not-allowed">
               Limpiar
             </button>
           </div>
