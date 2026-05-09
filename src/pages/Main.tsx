@@ -292,7 +292,7 @@ export default function EventosPage() {
               >
                 <option>{TODO_CAMPUS}</option>
                 {campusDisponibles.map((campusItem) => (
-                  <option key={campusItem} value={campusItem}>
+                  <option key={campusItem} value={campusItem ?? ""}>
                     {campusItem}
                   </option>
                 ))}
@@ -317,7 +317,7 @@ export default function EventosPage() {
               >
                 <option>{TODO_CATEGORIA}</option>
                 {categoriasDisponibles.map((categoriaItem) => (
-                  <option key={categoriaItem} value={categoriaItem}>
+                  <option key={categoriaItem} value={categoriaItem ?? ""}>
                     {categoriaItem}
                   </option>
                 ))}

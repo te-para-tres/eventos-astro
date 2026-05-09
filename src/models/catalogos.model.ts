@@ -1,28 +1,35 @@
-import type { TPaginacion } from "../types/responded";
+export type CarreraResponseItem = {
+  id: string;
+  idUnidadAcademica: string | null;
+  nombre: string | null;
+  descripcion: string | null;
+  tipo: string | null;
+  estado: string | null;
+  creado: string | null;
+  modificado: string | null;
+  eliminado: string | null;
+  eventos?: EventoResumen[];
+  unidadAcademica?: UnidadAcademicaResponseItem | null;
+};
+
+export type EventoResumen = {
+  id: string;
+  nombre: string | null;
+  fechaInicio: string | null;
+  fechaFin: string | null;
+  lugar: string | null;
+};
 
 export type CategoriaResponseItem = {
   id: string;
-  clave: string;
-  nombre: string;
-  descripcion: string | null;
-  creado: string;
-  modificado: string | null;
-  eliminado: string | null;
+  nombre: string | null;
 };
 
 export type UnidadAcademicaResponseItem = {
   id: string;
-  nombre: string;
+  nombre: string | null;
   descripcion: string | null;
-  telefono: string;
-  correo: string;
-  estado: string;
-  creado: string;
-  modificado: string | null;
-  eliminado: string | null;
-};
-
-export type CatalogoPaginadoResponse<T> = {
-  paginacion: TPaginacion;
-  resultado: T[];
+  telefono: string | null;
+  correo: string | null;
+  estado: string | null;
 };
