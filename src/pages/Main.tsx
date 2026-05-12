@@ -79,8 +79,8 @@ const eventosData: Evento[] = [
 
 const TODO_CAMPUS = "Todos los Campuses";
 const TODO_CATEGORIA = "Todas las Categorías";
-const CATEGORIA_ENDPOINT = "api/categoria-evento";
-const UNIDAD_ACADEMICA_ENDPOINT = "api/unidad-academica";
+const CATEGORIA_ENDPOINT = "api/categoria-evento.json";
+const UNIDAD_ACADEMICA_ENDPOINT = "api/unidad-academica.json";
 
 
 function EventCard({ event }: { event: Evento }) {

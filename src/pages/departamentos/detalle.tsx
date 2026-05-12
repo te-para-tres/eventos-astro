@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { http } from "../../hooks/http";
 import type { CarreraResponseItem, EventoResumen } from "../../models/catalogos.model";
 
-const CARRERA_ENDPOINT = "api/carrera";
+const CARRERA_ENDPOINT = "api/carrera.json";
 
 function formatearFecha(raw: string): string {
   const [year, month, day] = raw.split("T")[0].split("-").map(Number);
