@@ -1,6 +1,5 @@
 ---
-import EventCard from "../components/EventCard.astro";
-import FiltrosContainer from "../components/FiltrosContainer.astro";
+import Main from "./Main.tsx";
 import Layout from "../layouts/Layout.astro";
 
 const img1 = "https://lh3.googleusercontent.com/aida-public/AB6AXuCw9OQKmd4EtyO4PfgSh2D5OLffvTN1dkZ0Xplq1rCO7NflOMdKJkzneOOvIi843e309t4I4LpIuuI0kF5D-oiLSWJqPyJ2NK8x8FfhZW3idaLhLRjo1GvbqhNc9ULX-GR5M7qY0vK5bg-IcafsnuteoyMZEvF60O2cVN66U-lCb3_XeMmy5hWk64Jp3VDAn3hi6vTNlYNFt2zsnXbO_gHXWQd8byLs7n83ZpB8KN1dQ4-cgSDLMsmDuv4VWQYDO2l0QjiFXavZ-g";
@@ -188,50 +187,6 @@ const eventos = [
 ];
 ---
 
-<Layout title="Tablero de Eventos">
-  <div class="p-12 min-h-screen bg-white">
-    <header class="mb-12">
-      <h1
-        class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4"
-      >
-        Próximos Eventos
-      </h1>
-
-      <p class="text-lg text-gray-600 max-w-2xl leading-relaxed">
-        Explora y únete a las actividades y eventos más recientes en todos los
-        planteles de nuestra universidad.
-      </p>
-    </header>
-
-    <section class="mb-10">
-      <FiltrosContainer />
-    </section>
-
-    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {eventos.map((evento) => (
-        <EventCard
-          title={evento.title}
-          category={evento.category}
-          descripcion={evento.descripcion}
-          estatus={evento.estatus}
-          date={evento.date}
-          location={evento.location}
-          image={evento.image}
-          availability={evento.availability}
-          availabilityColor={evento.availabilityColor}
-        />
-      ))}
-    </div>
-
-    <div class="mt-16 flex flex-col items-center gap-4">
-      <button
-        class="border-2 border-primary text-primary font-semibold px-8 py-3 rounded-xl flex items-center gap-2 transition hover:bg-primary hover:text-white hover:-translate-y-0.5 hover:cursor-pointer"
-      >
-        Cargar más eventos
-        <i class="fa-solid fa-chevron-down text-sm"></i>
-      </button>
-
-      <p class="text-sm text-gray-500 font-medium">Mostrando 16 de 42 eventos</p>
-    </div>
-  </div>
+<Layout title="Tablero de Eventos Publicos">
+	<Main client:only="react" />
 </Layout>

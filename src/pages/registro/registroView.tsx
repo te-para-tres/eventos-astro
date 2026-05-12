@@ -11,6 +11,9 @@ const RegistroView: React.FC = () => {
   const [cargando, setCargando] = useState<boolean>(false);
   const [errores, setErrores] = useState<ErroresI>();
 
+
+
+
   return (
     <main className="min-h-[calc(100vh-100px)] grid grid-cols-1 lg:grid-cols-[45%_55%]">
 
