@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { registroSchema } from "../../shemas/registroSchema";
+import { registroSchema } from "../../schemas/registroEventoSchema";
 import { navigate } from "astro/virtual-modules/transitions-router.js";
 interface ErroresI {
   correo?: string;

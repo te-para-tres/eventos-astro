@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 type EventoMock = {
   title: string;
@@ -30,7 +31,6 @@ const RegistroEventoView: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de la petición para registrar
     setRegistrado(true);
   };
 
@@ -44,8 +44,6 @@ const RegistroEventoView: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6">
       <div className="bg-white border md:border-2 border-gray-200 md:border-primary rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row transition-all">
-
-        {/* Lado izquierdo: Información del evento */}
         <div className="md:w-5/12 bg-gray-50 relative flex flex-col">
           <div className="h-48 md:h-64 relative overflow-hidden shrink-0">
             <img
@@ -92,7 +90,6 @@ const RegistroEventoView: React.FC = () => {
           </div>
         </div>
 
-        {/* Lado derecho: Formulario de registro */}
         <div className="md:w-7/12 p-6 md:p-12 bg-white flex flex-col justify-center">
           <div className="mb-8">
             <h3 className="text-3xl font-extrabold mb-2 text-gray-800">
