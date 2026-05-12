@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { http } from "../../hooks/http";
 import type { CarreraResponseItem } from "../../models/catalogos.model";
 
-const CARRERA_ENDPOINT = "api/carrera";
+const CARRERA_ENDPOINT = "api/carrera.json";
 
 export default function Departamentos() {
   const [carreras, setCarreras] = useState<CarreraResponseItem[]>([]);
