@@ -4,6 +4,7 @@ import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { Toaster } from "@/components/ui/sonner";
 interface Props {
   title: string;
   ogTitle?: string;
@@ -54,10 +55,11 @@ const {
       <Navbar title={title} />
     </header>
     <main>
+      <Toaster client:only="react" />
       <slot />
     </main>
     <footer>
-      <Footer/>
+      <Footer />
     </footer>
 
     <style is:global>
