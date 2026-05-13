@@ -8,12 +8,21 @@ import { navigate } from "astro:transitions/client";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Evento } from "@/models/Evento.model";
-import { http } from "@/hooks/http";
+import { API_URL, http } from "@/hooks/http";
 import { toast } from "sonner";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
 import type { z } from "astro:content";
 
+dayjs.locale("es");
+
+const formatFecha = (fecha?: string) => {
+  if (!fecha) return "";
+  return dayjs(fecha).format("D MMM YYYY, h:mm A");
+};
+
 const RegistroEventoView: React.FC = () => {
-  const [evento, setEvento] = useState<Evento>();
+  const [evento, setEvento] = useState<Evento| null>();
   const [registrado, setRegistrado] = useState<boolean>(false);
   const [cargando, setCargando] = useState<boolean>(false);
   const id = new URLSearchParams(window.location.search).get("id");
@@ -30,9 +39,14 @@ const RegistroEventoView: React.FC = () => {
   const getEvento = useCallback(async () => {
     setCargando(true);
     try {
-      const res = await http.get(Evento.ENDPOINTS.DEFAULT, { id: id });
+      const params = {
+        id: id,
+        expand: Evento.EXPAND.DEFAULT
+      }
 
-      if (res.isError) {
+      const res = await http.get(Evento.ENDPOINTS.DEFAULT, params);
+
+      if (res.status !== 200) {
         toast.error("No se pudo obtener la informacion del evento");
         return;
       }
@@ -57,7 +71,7 @@ const RegistroEventoView: React.FC = () => {
         idEvento: id,
       };
 
-      const res = await http.post("api/registro-evento.json", body);
+      const res = await http.post("api/asistente.json", body);
 
       if (res.status !== 200) {
         toast.error(res.mensaje || "Ocurrio un problema al registrarse al evento");
@@ -85,7 +99,7 @@ const RegistroEventoView: React.FC = () => {
         <div className="md:w-5/12 bg-gray-50 relative flex flex-col">
           <div className="h-48 md:h-64 relative overflow-hidden shrink-0">
             <img
-              src={evento?.imagenDestacada?.ruta}
+              src={`${API_URL}recursos/${evento?.imagenDestacada?.ruta}`}
               alt={evento?.nombre}
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             />
@@ -106,7 +120,11 @@ const RegistroEventoView: React.FC = () => {
                 <i className="fa-solid fa-clock text-primary mt-1"></i>
                 <div>
                   <p className="font-semibold text-gray-800 text-sm md:text-base">Fecha y Hora</p>
-                  <p className="text-sm">{evento?.fechaInicio}</p>
+                  <p className="text-sm">
+                    {evento?.fechaFin
+                      ? `Desde ${formatFecha(evento.fechaInicio)} hasta ${formatFecha(evento.fechaFin)}`
+                      : formatFecha(evento?.fechaInicio)}
+                  </p>
                 </div>
               </div>
 

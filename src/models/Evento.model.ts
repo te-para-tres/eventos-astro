@@ -38,7 +38,7 @@ export class Evento {
   static BASE_ROUTE = "/eventos";
 
   static ENDPOINTS = {
-    DEFAULT: "api/eventos.json",
+    DEFAULT: "api/evento.json",
   };
 
   static EXPAND = {
