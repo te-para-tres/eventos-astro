@@ -1,3 +1,4 @@
+import type { Actividad } from "./Actividad.model";
 import type { Carrera } from "./Carrera.model";
 import type { CategoriaEvento } from "./CategoriaEvento.model";
 import type { EventoMaterial } from "./EventoMaterial.model";
@@ -9,6 +10,7 @@ export class Evento {
   id?: string;
   idUnidadAcademica?: string;
   idCategoriaEvento?: string;
+  idActividad?: string;
   idCarrera?: string;
   idImagenDestacada?: string;
   nombre?: string;
@@ -30,6 +32,7 @@ export class Evento {
   eventoMaterial?: EventoMaterial[];
   eventoMedia?: EventoMedia[];
   carrera?: Carrera;
+  actividad?: Actividad;
   categoriaEvento?: CategoriaEvento;
   imagenDestacada?: Media;
   unidadAcademica?: UnidadAcademica;
@@ -42,7 +45,7 @@ export class Evento {
   };
 
   static EXPAND = {
-    DEFAULT: "carrera,categoriaEvento,imagenDestacada,unidadAcademica,qr,eventoMaterials,eventoMedia",
+    DEFAULT: "carrera,categoriaEvento,imagenDestacada,unidadAcademica,qr,eventoMaterials,actividad,eventoMedia",
   };
 
   static fromJson(data: Partial<Evento>) {

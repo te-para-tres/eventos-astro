@@ -1,13 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
-import { http } from "../hooks/http";
+import { API_URL, http } from "../hooks/http";
 import { Evento as EventoModel } from "../models/Evento.model";
+import { Actividad as ActividadModel } from "../models/Actividad.model";
 import type { CategoriaResponseItem, UnidadAcademicaResponseItem } from "@/types/catalogos";
+import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationEllipsis, PaginationLink, PaginationNext } from "@/components/ui/pagination";
 
 const TODO_CAMPUS = "Todos los Campuses";
 const TODO_CATEGORIA = "Todas las Categorías";
+const TODO_ACTIVIDAD = "Todas las Actividades";
 const CATEGORIA_ENDPOINT = "api/categoria-evento.json";
 const UNIDAD_ACADEMICA_ENDPOINT = "api/unidad-academica.json";
 const EVENTO_ENDPOINT = EventoModel.ENDPOINTS.DEFAULT;
+const ACTIVIDAD_ENDPOINT = ActividadModel.ENDPOINTS.DEFAULT;
 
 function formatDateLabel(fechaInicio?: string, fechaFin?: string): string {
   if (!fechaInicio) return "";
@@ -29,10 +33,13 @@ function EventCard({ event }: { event: EventoModel }) {
   const availabilityBg = esLimitado ? "bg-orange-500" : "bg-emerald-500";
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col transition hover:shadow-xl hover:-translate-y-1 group">
+    <div
+      onClick={() => (window.location.href = `${EventoModel.BASE_ROUTE}`)}
+      className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col transition hover:shadow-xl hover:-translate-y-1 group cursor-pointer"
+    >
       <div className="relative h-52 overflow-hidden">
         <img
-          src={event.imagenDestacada?.ruta ?? "/img/image.png"}
+          src={event.imagenDestacada?.ruta ? `${API_URL}${event.imagenDestacada.ruta}` : undefined}
           className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
         />
         <div className="absolute top-4 left-4 flex gap-2">
@@ -45,10 +52,10 @@ function EventCard({ event }: { event: EventoModel }) {
         </div>
       </div>
       <div className="p-6 flex flex-col grow">
-        <h3 className="text-lg font-bold mb-3 group-hover:text-primary">
+        <h3 className="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
           {event.nombre}
         </h3>
-        <div className="flex flex-col gap-2 text-sm text-gray-500">
+        <div className="flex flex-col gap-2 text-sm text-gray-500 mt-auto">
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-clock text-primary"></i>
             {formatDateLabel(event.fechaInicio, event.fechaFin)}
@@ -58,12 +65,6 @@ function EventCard({ event }: { event: EventoModel }) {
             {event.lugar ?? event.unidadAcademica?.nombre}
           </div>
         </div>
-        <button
-          onClick={() => (window.location.href = "/eventos")}
-          className="mt-6 w-full p-2.5 border-2 border-primary text-primary rounded-lg font-bold transition hover:bg-primary hover:text-white cursor-pointer"
-        >
-          Ver Detalles
-        </button>
       </div>
     </div>
   );
@@ -106,19 +107,33 @@ function DateFilterPicker({ value, onChange, disabled = false }: DateFilterPicke
   );
 }
 
+const ITEMS_POR_PAGINA = 8;
+
 export default function EventosPage() {
   const [campus, setCampus] = useState(TODO_CAMPUS);
   const [categoria, setCategoria] = useState(TODO_CATEGORIA);
+  const [actividad, setActividad] = useState(TODO_ACTIVIDAD);
   const [fecha, setFecha] = useState("");
   const [eventosApi, setEventosApi] = useState<EventoModel[]>([]);
   const [resultados, setResultados] = useState<EventoModel[]>([]);
-  const [visible, setVisible] = useState(4);
+  const [pagina, setPagina] = useState(1);
   const [loading, setLoading] = useState(false);
   const [categoriasApi, setCategoriasApi] = useState<CategoriaResponseItem[]>([]);
   const [unidadesAcademicasApi, setUnidadesAcademicasApi] = useState<UnidadAcademicaResponseItem[]>([]);
+  const [actividadesApi, setActividadesApi] = useState<ActividadModel[]>([]);
+
+  const totalPaginas = Math.ceil(resultados.length / ITEMS_POR_PAGINA);
+  const eventosPagina = resultados.slice(
+    (pagina - 1) * ITEMS_POR_PAGINA,
+    pagina * ITEMS_POR_PAGINA
+  );
+  const desde = resultados.length === 0 ? 0 : (pagina - 1) * ITEMS_POR_PAGINA + 1;
+  const hasta = Math.min(pagina * ITEMS_POR_PAGINA, resultados.length);
 
   const obtenerEventos = useCallback(async () => {
-    const response = await http.get<EventoModel[]>(EVENTO_ENDPOINT);
+    const response = await http.get<EventoModel[]>(
+      `${EVENTO_ENDPOINT}?expand=${EventoModel.EXPAND.DEFAULT}`
+    );
     if (response.status === 200 && Array.isArray(response.resultado)) {
       setEventosApi(response.resultado);
       setResultados(response.resultado);
@@ -139,6 +154,13 @@ export default function EventosPage() {
     }
   }, []);
 
+  const obtenerActividades = useCallback(async () => {
+    const response = await http.get<ActividadModel[]>(ACTIVIDAD_ENDPOINT);
+    if (response.status === 200 && Array.isArray(response.resultado)) {
+      setActividadesApi(response.resultado);
+    }
+  }, []);
+
   const campusDisponibles =
     unidadesAcademicasApi.length > 0
       ? unidadesAcademicasApi.map((u) => u.nombre)
@@ -149,22 +171,29 @@ export default function EventosPage() {
       ? categoriasApi.map((c) => c.nombre)
       : ["Feria de Empleo", "Seminario", "Deportes", "Social"];
 
+  const actividadesDisponibles =
+    actividadesApi.length > 0
+      ? actividadesApi.map((a) => a.nombre)
+      : [];
+
   const filtrar = useCallback(() => {
     const filtrados = eventosApi.filter((e) =>
       (campus === TODO_CAMPUS || e.unidadAcademica?.nombre === campus) &&
       (categoria === TODO_CATEGORIA || e.categoriaEvento?.nombre === categoria) &&
+      (actividad === TODO_ACTIVIDAD || e.actividad?.nombre === actividad) &&
       (!fecha || e.fechaInicio?.slice(0, 10) === fecha)
     );
     setResultados(filtrados);
-    setVisible(4);
-  }, [eventosApi, campus, categoria, fecha]);
+    setPagina(1);
+  }, [eventosApi, campus, categoria, actividad, fecha]);
 
   const limpiar = () => {
     setCampus(TODO_CAMPUS);
     setCategoria(TODO_CATEGORIA);
+    setActividad(TODO_ACTIVIDAD);
     setFecha("");
     setResultados(eventosApi);
-    setVisible(4);
+    setPagina(1);
   };
 
   useEffect(() => {
@@ -179,7 +208,12 @@ export default function EventosPage() {
     const cargar = async () => {
       setLoading(true);
       try {
-        await Promise.all([obtenerEventos(), obtenerCategorias(), obtenerUnidadesAcademicas()]);
+        await Promise.all([
+          obtenerEventos(),
+          obtenerCategorias(),
+          obtenerUnidadesAcademicas(),
+          obtenerActividades(),
+        ]);
       } catch (error) {
         console.error(error);
       } finally {
@@ -187,7 +221,7 @@ export default function EventosPage() {
       }
     };
     void cargar();
-  }, [obtenerEventos, obtenerCategorias, obtenerUnidadesAcademicas]);
+  }, [obtenerEventos, obtenerCategorias, obtenerUnidadesAcademicas, obtenerActividades]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
@@ -199,7 +233,7 @@ export default function EventosPage() {
       </div>
 
       <section className="bg-white p-6 mb-12">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-center">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-center">
           <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
             <label htmlFor="campus-filter" className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase">
               Campus
@@ -240,6 +274,26 @@ export default function EventosPage() {
             </div>
           </div>
 
+          <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
+            <label htmlFor="actividad-filter" className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase">
+              Actividad
+            </label>
+            <div className="flex items-center gap-2">
+              <i className="fa-solid fa-person-running text-primary"></i>
+              <select
+                id="actividad-filter"
+                value={actividad}
+                onChange={(e) => setActividad(e.target.value)}
+                className="w-full bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer"
+              >
+                <option>{TODO_ACTIVIDAD}</option>
+                {actividadesDisponibles.map((a) => (
+                  <option key={a} value={a ?? ""}>{a}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <DateFilterPicker value={fecha} disabled={loading} onChange={setFecha} />
 
           <div className="flex gap-2 items-end">
@@ -263,36 +317,83 @@ export default function EventosPage() {
           <p className="text-sm">No se encontraron eventos con los filtros seleccionados.</p>
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {resultados.slice(0, visible).map((evento, i) => (
-            <EventCard key={evento.id ?? i} event={evento} />
-          ))}
-        </div>
-      )}
+        <>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {eventosPagina.map((evento) => (
+              <EventCard key={evento.id} event={evento} />
+            ))}
+          </div>
 
-      <div className="mt-16 flex flex-col items-center gap-4">
-        {visible < resultados.length && (
-          <button
-            onClick={() => setVisible((prev) => prev + 4)}
-            className="border-2 border-primary text-primary px-8 py-3 rounded-xl hover:bg-primary hover:text-white cursor-pointer transition-all"
-          >
-            Cargar más eventos
-          </button>
-        )}
-        {visible > 4 && (
-          <button
-            onClick={() => setVisible((prev) => Math.max(4, prev - 4))}
-            className="border-2 border-primary text-primary px-8 py-3 rounded-xl hover:bg-primary hover:text-white cursor-pointer transition-all"
-          >
-            Mostrar menos
-          </button>
-        )}
-        {!loading && (
-          <p className="text-sm text-gray-500">
-            Mostrando {Math.min(visible, resultados.length)} de {resultados.length}
-          </p>
-        )}
-      </div>
+          <div className="mt-12 flex flex-col items-center gap-3">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => {
+                      if (pagina > 1) {
+                        setPagina(pagina - 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }}
+                    className={pagina === 1 ? "pointer-events-none opacity-40" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+
+                {(() => {
+                  const paginas: (number | "...")[] = [];
+                  if (totalPaginas <= 7) {
+                    for (let i = 1; i <= totalPaginas; i++) paginas.push(i);
+                  } else {
+                    paginas.push(1);
+                    if (pagina > 3) paginas.push("...");
+                    const desde = Math.max(2, pagina - 1);
+                    const hasta = Math.min(totalPaginas - 1, pagina + 1);
+                    for (let i = desde; i <= hasta; i++) paginas.push(i);
+                    if (pagina < totalPaginas - 2) paginas.push("...");
+                    paginas.push(totalPaginas);
+                  }
+
+                  return paginas.map((p, i) =>
+                    p === "..." ? (
+                      <PaginationItem key={`ellipsis-${i}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={p}>
+                        <PaginationLink
+                          isActive={p === pagina}
+                          onClick={() => {
+                            setPagina(p as number);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
+                          className="cursor-pointer"
+                        >
+                          {p}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  );
+                })()}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => {
+                      if (pagina < totalPaginas) {
+                        setPagina(pagina + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }}
+                    className={pagina === totalPaginas ? "pointer-events-none opacity-40" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+            <p className="text-sm text-gray-400">
+              Mostrando {desde}–{hasta} de {resultados.length} eventos
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 }
