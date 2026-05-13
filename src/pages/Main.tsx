@@ -39,7 +39,7 @@ function EventCard({ event }: { event: EventoModel }) {
     >
       <div className="relative h-52 overflow-hidden">
         <img
-          src={event.imagenDestacada?.ruta ? `${API_URL}${event.imagenDestacada.ruta}` : undefined}
+          src={event.imagenDestacada?.ruta ? `${API_URL}/recursos${event.imagenDestacada.ruta}` : undefined}
           className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
         />
         <div className="absolute top-4 left-4 flex gap-2">

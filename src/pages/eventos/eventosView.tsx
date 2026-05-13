@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Progress } from "../../components/ui/Progress";
-import "../../styles/global.css"
+// import "../../styles/global.css"
 
 const CAPACIDAD = 200;
 const INICIAL_CONFIRMADOS = 42;
