@@ -1,0 +1,255 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="404 · Página no encontrada — UES Eventos"
+  ogTitle="Página no encontrada"
+>
+  <div class="relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <div
+        class="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[650px] rounded-full blur-3xl opacity-[0.12]"
+        style="background: radial-gradient(ellipse at center, #f39233 0%, #c4445f 35%, #7b163e 65%, transparent 100%);"
+      >
+      </div>
+    </div>
+
+    <section
+      class="relative z-10 min-h-[calc(100vh-9rem)] flex flex-col items-center justify-center px-6 py-16 sm:py-20 page-enter"
+    >
+      <div
+        class="flex flex-col items-center text-center max-w-3xl mx-auto gap-6"
+      >
+        <div class="w-full max-w-2xl mx-auto">
+          <div
+            id="digits-group"
+            class="flex items-center justify-center gap-3 sm:gap-6 select-none"
+            aria-hidden="true"
+          >
+            <span
+              id="digit-left"
+              class="digit-char font-black text-primary leading-none tracking-tighter will-change-transform"
+              style="font-size: clamp(5.5rem, 18vw, 15rem);">4</span
+            >
+
+            <span
+              id="digit-center"
+              class="digit-char relative flex-shrink-0 will-change-transform"
+              style="width: clamp(5.5rem, 18vw, 15rem); height: clamp(5.5rem, 18vw, 15rem);"
+            >
+              <span
+                class="spin-ring absolute inset-0 rounded-full"
+                style="background: linear-gradient(135deg, #f39233 0%, #c4445f 45%, #731C38 100%);"
+              ></span>
+              <span class="absolute inset-[3px] rounded-full bg-bg-main"></span>
+              <span class="absolute inset-0 flex items-center justify-center">
+                <span
+                  class="material-symbols-outlined text-primary"
+                  style="font-size: clamp(2.5rem, 9vw, 7.5rem); font-variation-settings: 'FILL' 0, 'wght' 700;"
+                  >school</span
+                >
+              </span>
+            </span>
+
+            <span
+              id="digit-right"
+              class="digit-char font-black text-primary leading-none tracking-tighter will-change-transform"
+              style="font-size: clamp(5.5rem, 18vw, 15rem);">4</span
+            >
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-text-main">
+            Parece que este evento se canceló
+          </h1>
+          <p
+            class="text-text-muted text-base sm:text-lg max-w-xl mx-auto leading-relaxed"
+          >
+            La página que buscas no existe o fue movida. No te preocupes&nbsp;—
+            el calendario sigue lleno de eventos para ti.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 bg-primary text-text-light font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:-translate-y-px hover:bg-primary-hover"
+            style="box-shadow: 0 4px 14px rgba(115,28,56,0.25);"
+          >
+            <i class="fa-solid fa-arrow-left text-sm"></i>
+            Volver al inicio
+          </a>
+          <a
+            href="/eventos"
+            class="inline-flex items-center gap-2 border-2 border-primary text-primary font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:bg-primary hover:text-text-light hover:-translate-y-px"
+          >
+            <i class="fa-solid fa-calendar-days text-sm"></i>
+            Ver eventos
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mt-12 w-full"
+      >
+        <a
+          href="/eventos"
+          class="group flex flex-col gap-4 bg-bg-alt border border-border-custom rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/25"
+        >
+          <span
+            class="material-symbols-outlined text-primary"
+            style="font-size:2rem;">event</span
+          >
+          <div>
+            <p
+              class="font-semibold text-text-main group-hover:text-primary transition-colors"
+            >
+              Próximos eventos
+            </p>
+            <p class="text-text-muted text-sm mt-1 leading-relaxed">
+              Explora la agenda de eventos universitarios disponibles.
+            </p>
+          </div>
+          <span
+            class="mt-auto text-primary text-sm font-medium flex items-center gap-1.5"
+          >
+            Ver eventos <i class="fa-solid fa-arrow-right text-xs"></i>
+          </span>
+        </a>
+
+        <a
+          href="/iniciar-sesion"
+          class="group flex flex-col gap-4 bg-bg-alt border border-border-custom rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/25"
+        >
+          <span
+            class="material-symbols-outlined text-primary"
+            style="font-size:2rem;">login</span
+          >
+          <div>
+            <p
+              class="font-semibold text-text-main group-hover:text-primary transition-colors"
+            >
+              Iniciar sesión
+            </p>
+            <p class="text-text-muted text-sm mt-1 leading-relaxed">
+              Accede con tu cuenta institucional de la UES.
+            </p>
+          </div>
+          <span
+            class="mt-auto text-primary text-sm font-medium flex items-center gap-1.5"
+          >
+            Entrar <i class="fa-solid fa-arrow-right text-xs"></i>
+          </span>
+        </a>
+
+        <a
+          href="/registro"
+          class="group flex flex-col gap-4 bg-bg-alt border border-border-custom rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/25"
+        >
+          <span
+            class="material-symbols-outlined text-primary"
+            style="font-size:2rem;">support_agent</span
+          >
+          <div>
+            <p
+              class="font-semibold text-text-main group-hover:text-primary transition-colors"
+            >
+              Crear cuenta
+            </p>
+            <p class="text-text-muted text-sm mt-1 leading-relaxed">
+              Regístrate para asistir a los eventos universitarios.
+            </p>
+          </div>
+          <span
+            class="mt-auto text-primary text-sm font-medium flex items-center gap-1.5"
+          >
+            Registrarse <i class="fa-solid fa-arrow-right text-xs"></i>
+          </span>
+        </a>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .spin-ring {
+    animation: ues-spin 12s linear infinite;
+  }
+
+  @keyframes ues-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spin-ring {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const group = document.getElementById("digits-group");
+    const dLeft = document.getElementById("digit-left");
+    const dCenter = document.getElementById("digit-center");
+    const dRight = document.getElementById("digit-right");
+
+    if (!group || !dLeft || !dCenter || !dRight) return;
+
+    let targetX = 0,
+      targetY = 0;
+    let curX = 0,
+      curY = 0;
+    let raf: number;
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    function onMove(e: MouseEvent) {
+      const r = group!.getBoundingClientRect();
+      targetX = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+      targetY = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+    }
+
+    function onLeave() {
+      targetX = 0;
+      targetY = 0;
+    }
+
+    function tick() {
+      curX = lerp(curX, targetX, 0.07);
+      curY = lerp(curY, targetY, 0.07);
+
+      const px = curX * 22;
+      const py = curY * 12;
+
+      dLeft.style.transform = `translate3d(${-px * 1.5}px, ${-py * 0.9}px, 0) rotate(${-curX * 2.5}deg)`;
+      dCenter.style.transform = `translate3d(${px * 0.3}px, ${-py * 1.3}px, 0)`;
+      dRight.style.transform = `translate3d(${px * 1.5}px, ${-py * 0.9}px, 0) rotate(${curX * 2.5}deg)`;
+
+      raf = requestAnimationFrame(tick);
+    }
+
+    group.addEventListener("mousemove", onMove);
+    group.addEventListener("mouseleave", onLeave);
+    raf = requestAnimationFrame(tick);
+
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        group.removeEventListener("mousemove", onMove);
+        group.removeEventListener("mouseleave", onLeave);
+        cancelAnimationFrame(raf);
+      },
+      { once: true },
+    );
+  })();
+</script>
