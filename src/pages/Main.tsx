@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { http } from "../hooks/http";
-import type {
-  CategoriaResponseItem,
-  UnidadAcademicaResponseItem,
-} from "../models/catalogos.model.ts";
+import type { CategoriaResponseItem, UnidadAcademicaResponseItem } from "@/types/catalogos";
+
 
 type AvailabilityColor = "emerald" | "amber";
 
@@ -207,6 +205,8 @@ export default function EventosPage() {
       if (response.status === 200 && Array.isArray(response.resultado)) {
         setUnidadesAcademicasApi(response.resultado);
       }
+
+
     } catch (error) {
       console.error(error);
     }
@@ -272,9 +272,8 @@ export default function EventosPage() {
         </p>
       </div>
 
-      <section className="bg-white border-2 border-primary rounded-xl shadow-sm p-6 mb-12">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-
+      <section className="bg-white p-6 mb-12">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-center">
           <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
             <label
               htmlFor="campus-filter"
@@ -330,21 +329,12 @@ export default function EventosPage() {
             disabled={loadingCatalogos}
             onChange={setFecha}
           />
-
-          <div className="flex gap-2">
-            <button onClick={filtrar}
-              disabled={loadingCatalogos}
-              className="w-full bg-primary text-white rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed">
-              Buscar
-            </button>
-
+          <div className="flex gap-2 items-end">
             <button onClick={limpiar}
-              disabled={loadingCatalogos}
-              className="w-full bg-gray-100 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:bg-gray-300 disabled:opacity-60 disabled:cursor-not-allowed">
-              Limpiar
+              className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center gap-1.5 cursor-pointer">
+              <i className="fa-solid fa-filter-circle-xmark text-xs"></i>
             </button>
           </div>
-
         </div>
       </section>
 
