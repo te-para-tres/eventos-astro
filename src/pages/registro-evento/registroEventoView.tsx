@@ -8,11 +8,11 @@ import { navigate } from "astro:transitions/client";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Evento } from "@/models/Evento.model";
-import { API_URL, http } from "@/hooks/http";
 import { toast } from "sonner";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import type { z } from "astro:content";
+import { API_URL, http } from "@/hooks/http";
 
 dayjs.locale("es");
 
