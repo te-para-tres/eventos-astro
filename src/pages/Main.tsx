@@ -1,129 +1,63 @@
 import { useState, useEffect, useCallback } from "react";
 import { http } from "../hooks/http";
+import { Evento as EventoModel } from "../models/Evento.model";
 import type { CategoriaResponseItem, UnidadAcademicaResponseItem } from "@/types/catalogos";
-
-
-type AvailabilityColor = "emerald" | "amber";
-
-type Evento = {
-  title: string;
-  category: string;
-  date: string;
-  dateLabel: string;
-  location: string;
-  image: string;
-  availability: string;
-  availabilityColor: AvailabilityColor;
-  campus: string;
-};
-
-const eventosData: Evento[] = [
-  {
-    title: "IA en Ética: Un Seminario Profundo",
-    category: "Seminario",
-    date: "2026-10-12",
-    dateLabel: "12 Oct, 2:00 PM – 4:00 PM",
-    location: "Campus Hermosillo, Aula 402",
-    campus: "Hermosillo",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCw9OQKmd4EtyO4PfgSh2D5OLffvTN1dkZ0Xplq1rCO7NflOMdKJkzneOOvIi843e309t4I4LpIuuI0kF5D-oiLSWJqPyJ2NK8x8FfhZW3idaLhLRjo1GvbqhNc9ULX-GR5M7qY0vK5bg-IcafsnuteoyMZEvF60O2cVN66U-lCb3_XeMmy5hWk64Jp3VDAn3hi6vTNlYNFt2zsnXbO_gHXWQd8byLs7n83ZpB8KN1dQ4-cgSDLMsmDuv4VWQYDO2l0QjiFXavZ-g",
-    availability: "15 Lugares disponibles",
-    availabilityColor: "emerald",
-  },
-  {
-    title: "IA en Ética: Un Seminario Profundo (Extra)",
-    category: "Seminario",
-    date: "2026-10-12",
-    dateLabel: "12 Oct, 2:00 PM – 4:00 PM",
-    location: "Campus Hermosillo, Aula 402",
-    campus: "Hermosillo",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCw9OQKmd4EtyO4PfgSh2D5OLffvTN1dkZ0Xplq1rCO7NflOMdKJkzneOOvIi843e309t4I4LpIuuI0kF5D-oiLSWJqPyJ2NK8x8FfhZW3idaLhLRjo1GvbqhNc9ULX-GR5M7qY0vK5bg-IcafsnuteoyMZEvF60O2cVN66U-lCb3_XeMmy5hWk64Jp3VDAn3hi6vTNlYNFt2zsnXbO_gHXWQd8byLs7n83ZpB8KN1dQ4-cgSDLMsmDuv4VWQYDO2l0QjiFXavZ-g",
-    availability: "15 Lugares disponibles",
-    availabilityColor: "emerald",
-  },
-  {
-    title: "Final Anual de Basquetbol UES",
-    category: "Deportes",
-    date: "2026-10-15",
-    dateLabel: "15 Oct, 6:00 PM",
-    location: "Complejo Deportivo",
-    campus: "Hermosillo",
-    image: "/img/image.png",
-    availability: "50+ Lugares disponibles",
-    availabilityColor: "emerald",
-  },
-  {
-    title: "Tech Connect: Feria de Empleo Otoño",
-    category: "Feria de Empleo",
-    date: "2026-10-18",
-    dateLabel: "18 Oct, 10:00 AM – 4:00 PM",
-    location: "Campus Navojoa, Sala de Exposiciones",
-    campus: "Navojoa",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCj2tWOnL1OeSM0aCK8tIk9-YKWcTSQTWUO7E0-mwqeAZ9ik7C1ESM7LbyPKpK_9fNoHbsMnVF_RJQU2v-xCnzMJBTvD09_IzcpSZnaHDSVS7KD6Nu0CSvV_isYpUbe97Y-KFGff34uBcMx22a9ATyHgaduUFA3rjAm_5mjLuo5DSfKv3V9F8bCC4FZKLbXx2lQDx3VFJCxcG939bdxTn4qrbTpBEhUvP34AS4hhw-WJskFA_HiVP2PrnlM63OmcGr-MLtE4mViGg",
-    availability: "Limitado: 8 libres",
-    availabilityColor: "amber",
-  },
-  {
-    title: "Convivencia de Graduados: Noche Social",
-    category: "Social",
-    date: "2026-10-20",
-    dateLabel: "20 Oct, 7:30 PM",
-    location: "Centro de Estudiantes",
-    campus: "Hermosillo",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAnjK_isGZD8ZdqR-Rrdyd6uPPCFPUY8HFoELe8JBEt8etwLsniUJV2-QZXy-K6ld3cjcFpnK5hDDc5OaQbB6nprfPVneQOxz22tnrmzpV_8R5N3R1aa20Mi2cQA3Wc3_oKDZvWKGwp4M3mCMaAd82VJ-XLq4-TzsS4wii9Ss5ZKx8XfWBYAO-mTPt5d62seq0dbJg3YYtbsSVPKx-RJFUrFUtvBGhLG9Jn7o5XuSPSMmFWo_o15s4zHjzvsDqc6sGdQ-3fRR5JCA",
-    availability: "100+ Lugares disponibles",
-    availabilityColor: "emerald",
-  },
-];
 
 const TODO_CAMPUS = "Todos los Campuses";
 const TODO_CATEGORIA = "Todas las Categorías";
 const CATEGORIA_ENDPOINT = "api/categoria-evento.json";
 const UNIDAD_ACADEMICA_ENDPOINT = "api/unidad-academica.json";
+const EVENTO_ENDPOINT = EventoModel.ENDPOINTS.DEFAULT;
 
+function formatDateLabel(fechaInicio?: string, fechaFin?: string): string {
+  if (!fechaInicio) return "";
+  const inicio = new Date(fechaInicio);
+  const dia = inicio.toLocaleDateString("es-MX", { day: "2-digit", month: "short" });
+  const horaInicio = inicio.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  if (!fechaFin) return `${dia}, ${horaInicio}`;
+  const fin = new Date(fechaFin);
+  const horaFin = fin.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  return `${dia}, ${horaInicio} – ${horaFin}`;
+}
 
-function EventCard({ event }: { event: Evento }) {
-  const availabilityBg =
-    event.availabilityColor === "emerald"
-      ? "bg-emerald-500"
-      : "bg-orange-500";
+function EventCard({ event }: { event: EventoModel }) {
+  const lugares = event.capacidadMaxima ?? 0;
+  const esLimitado = lugares > 0 && lugares <= 10;
+  const availability = esLimitado
+    ? `Limitado: ${lugares} libres`
+    : `${lugares > 0 ? lugares + "+" : "Sin límite de"} lugares disponibles`;
+  const availabilityBg = esLimitado ? "bg-orange-500" : "bg-emerald-500";
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col transition hover:shadow-xl hover:-translate-y-1 group">
-
       <div className="relative h-52 overflow-hidden">
         <img
-          src={event.image}
+          src={event.imagenDestacada?.ruta ?? "/img/image.png"}
           className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
         />
-
         <div className="absolute top-4 left-4 flex gap-2">
           <span className="px-3 py-1 text-xs font-bold bg-primary text-white rounded">
-            {event.category}
+            {event.categoriaEvento?.nombre}
           </span>
-
           <span className={`px-3 py-1 text-xs font-bold text-white rounded ${availabilityBg}`}>
-            {event.availability}
+            {availability}
           </span>
         </div>
       </div>
-
       <div className="p-6 flex flex-col grow">
         <h3 className="text-lg font-bold mb-3 group-hover:text-primary">
-          {event.title}
+          {event.nombre}
         </h3>
-
         <div className="flex flex-col gap-2 text-sm text-gray-500">
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-clock text-primary"></i>
-            {event.dateLabel}
+            {formatDateLabel(event.fechaInicio, event.fechaFin)}
           </div>
-
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-location-dot text-primary"></i>
-            {event.location}
+            {event.lugar ?? event.unidadAcademica?.nombre}
           </div>
         </div>
-
         <button
           onClick={() => (window.location.href = "/eventos")}
           className="mt-6 w-full p-2.5 border-2 border-primary text-primary rounded-lg font-bold transition hover:bg-primary hover:text-white cursor-pointer"
@@ -158,7 +92,6 @@ function DateFilterPicker({ value, onChange, disabled = false }: DateFilterPicke
           </button>
         )}
       </div>
-
       <div className="flex items-center gap-2">
         <i className="fa-regular fa-calendar text-primary"></i>
         <input
@@ -173,71 +106,64 @@ function DateFilterPicker({ value, onChange, disabled = false }: DateFilterPicke
   );
 }
 
-
 export default function EventosPage() {
   const [campus, setCampus] = useState(TODO_CAMPUS);
   const [categoria, setCategoria] = useState(TODO_CATEGORIA);
   const [fecha, setFecha] = useState("");
-  const [resultados, setResultados] = useState(eventosData);
+  const [eventosApi, setEventosApi] = useState<EventoModel[]>([]);
+  const [resultados, setResultados] = useState<EventoModel[]>([]);
   const [visible, setVisible] = useState(4);
-  const [loadingCatalogos, setLoadingCatalogos] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [categoriasApi, setCategoriasApi] = useState<CategoriaResponseItem[]>([]);
-  const [unidadesAcademicasApi, setUnidadesAcademicasApi] = useState<
-    UnidadAcademicaResponseItem[]
-  >([]);
+  const [unidadesAcademicasApi, setUnidadesAcademicasApi] = useState<UnidadAcademicaResponseItem[]>([]);
+
+  const obtenerEventos = useCallback(async () => {
+    const response = await http.get<EventoModel[]>(EVENTO_ENDPOINT);
+    if (response.status === 200 && Array.isArray(response.resultado)) {
+      setEventosApi(response.resultado);
+      setResultados(response.resultado);
+    }
+  }, []);
 
   const obtenerCategorias = useCallback(async () => {
-    try {
-      const response = await http.get<CategoriaResponseItem[]>(CATEGORIA_ENDPOINT);
-      if (response.status === 200 && Array.isArray(response.resultado)) {
-        setCategoriasApi(response.resultado);
-      }
-    } catch (error) {
-      console.error(error);
+    const response = await http.get<CategoriaResponseItem[]>(CATEGORIA_ENDPOINT);
+    if (response.status === 200 && Array.isArray(response.resultado)) {
+      setCategoriasApi(response.resultado);
     }
   }, []);
 
   const obtenerUnidadesAcademicas = useCallback(async () => {
-    try {
-      const response = await http.get<UnidadAcademicaResponseItem[]>(
-        UNIDAD_ACADEMICA_ENDPOINT
-      );
-      if (response.status === 200 && Array.isArray(response.resultado)) {
-        setUnidadesAcademicasApi(response.resultado);
-      }
-
-
-    } catch (error) {
-      console.error(error);
+    const response = await http.get<UnidadAcademicaResponseItem[]>(UNIDAD_ACADEMICA_ENDPOINT);
+    if (response.status === 200 && Array.isArray(response.resultado)) {
+      setUnidadesAcademicasApi(response.resultado);
     }
   }, []);
 
   const campusDisponibles =
     unidadesAcademicasApi.length > 0
-      ? unidadesAcademicasApi.map((unidad) => unidad.nombre)
+      ? unidadesAcademicasApi.map((u) => u.nombre)
       : ["Hermosillo", "Navojoa"];
 
   const categoriasDisponibles =
     categoriasApi.length > 0
-      ? categoriasApi.map((cat) => cat.nombre)
+      ? categoriasApi.map((c) => c.nombre)
       : ["Feria de Empleo", "Seminario", "Deportes", "Social"];
 
-  const filtrar = () => {
-    const filtrados = eventosData.filter((e) =>
-      (campus === TODO_CAMPUS || e.campus === campus) &&
-      (categoria === TODO_CATEGORIA || e.category === categoria) &&
-      (!fecha || e.date === fecha)
+  const filtrar = useCallback(() => {
+    const filtrados = eventosApi.filter((e) =>
+      (campus === TODO_CAMPUS || e.unidadAcademica?.nombre === campus) &&
+      (categoria === TODO_CATEGORIA || e.categoriaEvento?.nombre === categoria) &&
+      (!fecha || e.fechaInicio?.slice(0, 10) === fecha)
     );
-
     setResultados(filtrados);
     setVisible(4);
-  };
+  }, [eventosApi, campus, categoria, fecha]);
 
   const limpiar = () => {
     setCampus(TODO_CAMPUS);
     setCategoria(TODO_CATEGORIA);
     setFecha("");
-    setResultados(eventosData);
+    setResultados(eventosApi);
     setVisible(4);
   };
 
@@ -247,26 +173,26 @@ export default function EventosPage() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [campus, categoria, fecha]);
+  }, [filtrar]);
 
   useEffect(() => {
-    const cargarCatalogos = async () => {
-      setLoadingCatalogos(true);
-      console.log("Cargando catálogos...");
-      await Promise.all([obtenerCategorias(), obtenerUnidadesAcademicas()]);
-      setLoadingCatalogos(false);
+    const cargar = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([obtenerEventos(), obtenerCategorias(), obtenerUnidadesAcademicas()]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
-
-    void cargarCatalogos();
-  }, [obtenerCategorias, obtenerUnidadesAcademicas]);
+    void cargar();
+  }, [obtenerEventos, obtenerCategorias, obtenerUnidadesAcademicas]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
-
       <div className="mb-12">
-        <h1 className="text-4xl font-extrabold mb-4">
-          Próximos Eventos
-        </h1>
+        <h1 className="text-4xl font-extrabold mb-4">Próximos Eventos</h1>
         <p className="text-gray-600 max-w-2xl">
           Explora y únete a las actividades y eventos más recientes.
         </p>
@@ -275,10 +201,7 @@ export default function EventosPage() {
       <section className="bg-white p-6 mb-12">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-center">
           <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
-            <label
-              htmlFor="campus-filter"
-              className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase"
-            >
+            <label htmlFor="campus-filter" className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase">
               Campus
             </label>
             <div className="flex items-center gap-2">
@@ -290,20 +213,15 @@ export default function EventosPage() {
                 className="w-full bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer"
               >
                 <option>{TODO_CAMPUS}</option>
-                {campusDisponibles.map((campusItem) => (
-                  <option key={campusItem} value={campusItem ?? ""}>
-                    {campusItem}
-                  </option>
+                {campusDisponibles.map((c) => (
+                  <option key={c} value={c ?? ""}>{c}</option>
                 ))}
               </select>
             </div>
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-linear-to-br from-white to-gray-50 px-3 py-2 shadow-sm transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/25">
-            <label
-              htmlFor="categoria-filter"
-              className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase"
-            >
+            <label htmlFor="categoria-filter" className="mb-1 block text-xs font-semibold tracking-wide text-gray-500 uppercase">
               Categoría
             </label>
             <div className="flex items-center gap-2">
@@ -315,34 +233,42 @@ export default function EventosPage() {
                 className="w-full bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer"
               >
                 <option>{TODO_CATEGORIA}</option>
-                {categoriasDisponibles.map((categoriaItem) => (
-                  <option key={categoriaItem} value={categoriaItem ?? ""}>
-                    {categoriaItem}
-                  </option>
+                {categoriasDisponibles.map((c) => (
+                  <option key={c} value={c ?? ""}>{c}</option>
                 ))}
               </select>
             </div>
           </div>
 
-          <DateFilterPicker
-            value={fecha}
-            disabled={loadingCatalogos}
-            onChange={setFecha}
-          />
+          <DateFilterPicker value={fecha} disabled={loading} onChange={setFecha} />
+
           <div className="flex gap-2 items-end">
-            <button onClick={limpiar}
-              className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center gap-1.5 cursor-pointer">
+            <button
+              onClick={limpiar}
+              className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center gap-1.5 cursor-pointer"
+            >
               <i className="fa-solid fa-filter-circle-xmark text-xs"></i>
             </button>
           </div>
         </div>
       </section>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {resultados.slice(0, visible).map((evento, i) => (
-          <EventCard key={i} event={evento} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center py-24 text-gray-400">
+          <i className="fa-solid fa-spinner fa-spin text-3xl"></i>
+        </div>
+      ) : resultados.length === 0 ? (
+        <div className="flex flex-col items-center py-24 text-gray-400 gap-3">
+          <i className="fa-solid fa-calendar-xmark text-4xl"></i>
+          <p className="text-sm">No se encontraron eventos con los filtros seleccionados.</p>
+        </div>
+      ) : (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {resultados.slice(0, visible).map((evento, i) => (
+            <EventCard key={evento.id ?? i} event={evento} />
+          ))}
+        </div>
+      )}
 
       <div className="mt-16 flex flex-col items-center gap-4">
         {visible < resultados.length && (
@@ -351,7 +277,6 @@ export default function EventosPage() {
             className="border-2 border-primary text-primary px-8 py-3 rounded-xl hover:bg-primary hover:text-white cursor-pointer transition-all"
           >
             Cargar más eventos
-
           </button>
         )}
         {visible > 4 && (
@@ -362,12 +287,12 @@ export default function EventosPage() {
             Mostrar menos
           </button>
         )}
-
-        <p className="text-sm text-gray-500">
-          Mostrando {Math.min(visible, resultados.length)} de {resultados.length}
-        </p>
+        {!loading && (
+          <p className="text-sm text-gray-500">
+            Mostrando {Math.min(visible, resultados.length)} de {resultados.length}
+          </p>
+        )}
       </div>
-
     </div>
   );
 }
