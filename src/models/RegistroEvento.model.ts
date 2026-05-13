@@ -4,10 +4,8 @@ export class RegistroEvento {
   idUnidadAcademica?: string;
   idEvento?: string;
   nombre?: string;
-  correo?: string;
   expediente?: string;
   carrera?: string;
-  telefono?: string;
 
   static CLASS_NAME = "Registro Evento";
   static BASE_ROUTE = "/registro-evento";

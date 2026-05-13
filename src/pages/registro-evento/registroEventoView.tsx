@@ -22,10 +22,8 @@ const RegistroEventoView: React.FC = () => {
     resolver: zodResolver(RegistroEventoSchema),
     defaultValues: {
       carrera: "",
-      correo: "",
       expediente: "",
       nombre: "",
-      telefono: ""
     }
   });
 
@@ -160,71 +158,6 @@ const RegistroEventoView: React.FC = () => {
             <form onSubmit={form.handleSubmit(onFinish)}>
               <FieldSet>
                 <FieldGroup className="flex flex-col gap-5 md:gap-6">
-
-                  <Controller
-                    name="nombre"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-2" data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="nombre" required>
-                          Nombre Completo
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id="nombre"
-                          placeholder="Ej. Juan Perez"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError>{fieldState.error?.message}</FieldError>
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  <Controller
-                    name="correo"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-2" data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="correo" required>
-                          Correo Electronico
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id="correo"
-                          type="email"
-                          placeholder="Ej. juan@ues.mx"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError>{fieldState.error?.message}</FieldError>
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  <Controller
-                    name="carrera"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-2" data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="carrera" required>
-                          Carrera
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id="carrera"
-                          placeholder="Ej. Ingenieria de Software"
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError>{fieldState.error?.message}</FieldError>
-                        )}
-                      </Field>
-                    )}
-                  />
-
                   <Controller
                     name="expediente"
                     control={form.control}
@@ -250,18 +183,38 @@ const RegistroEventoView: React.FC = () => {
                   />
 
                   <Controller
-                    name="telefono"
+                    name="nombre"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-2" data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="telefono" required>
-                          Numero de Teléfono
+                        <FieldLabel htmlFor="nombre" required>
+                          Nombre Completo
                         </FieldLabel>
                         <Input
                           {...field}
-                          id="telefono"
-                          type="tel"
-                          placeholder="Ej. 6621234567"
+                          id="nombre"
+                          placeholder="Ej. Juan Perez"
+                          aria-invalid={fieldState.invalid}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError>{fieldState.error?.message}</FieldError>
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name="carrera"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-2" data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="carrera" required>
+                          Carrera
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id="carrera"
+                          placeholder="Ej. Ingenieria de Software"
                           aria-invalid={fieldState.invalid}
                         />
                         {fieldState.invalid && (
