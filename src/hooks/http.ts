@@ -147,7 +147,7 @@ export class HttpService implements IHttpService {
 
         return {
             ...response,
-            isError: response?.status !== 200 ? true : false,
+            isError: _response?.status !== 200 ? true : false,
             status: _response?.status,
             resultado: response?.resultado || response,
         } as DefaultResponse<T>;
@@ -217,7 +217,7 @@ export class HttpService implements IHttpService {
             body: data,
         });
 
-        const response = await _response.json;
+        const response = await _response.json();
 
         return {
             ...response,

@@ -15,7 +15,7 @@ export class Carrera extends ModeloBase {
   static BASE_ROUTE = "/carreras";
 
   static ENDPOINTS = {
-    DEFAULT: "api/carreras.json",
+    DEFAULT: "api/carrera.json",
   };
 
   static EXPAND = {

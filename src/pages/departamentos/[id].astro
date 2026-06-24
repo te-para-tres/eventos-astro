@@ -5,6 +5,7 @@ import { getCarreras } from "@/services/departamentos";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 
+export const prerender = false;
 const { id } = Astro.params;
 
 const carrera = await getCarreras({

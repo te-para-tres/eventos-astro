@@ -3,9 +3,13 @@ import Layout from "@/layouts/Layout.astro";
 import type { Carrera } from "@/models/Carrera.model";
 import { getCarreras } from "@/services/departamentos";
 
+export const prerender = false;
+
 const carreras = await getCarreras({
-  ordenar: "nombre-asc",
+  ordenar: "nombre-ac"
 });
+
+console.log(carreras)
 ---
 
 <Layout title="Departamentos">
