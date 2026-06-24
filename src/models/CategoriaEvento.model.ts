@@ -1,13 +1,10 @@
 import type { Evento } from "./Evento.model";
+import { ModeloBase } from "../types/ModeloBase.model";
 
-export class CategoriaEvento {
-  id?: string;
+export class CategoriaEvento extends ModeloBase {
   clave?: string;
   nombre?: string;
   descripcion?: string;
-  creado?: string;
-  modificado?: string;
-  eliminado?: string;
 
   eventos?: Evento[];
 
@@ -31,6 +28,6 @@ export class CategoriaEvento {
   }
 
   constructor(data: Partial<CategoriaEvento> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

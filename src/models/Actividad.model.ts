@@ -1,11 +1,9 @@
-export class Actividad {
-  id?: string;
+import { ModeloBase } from "../types/ModeloBase.model";
+
+export class Actividad extends ModeloBase {
   clave?: string;
   nombre?: string;
   descripcion?: string;
-  creado?: string;
-  modificado?: string;
-  eliminado?: string;
 
   static CLASS_NAME = "Actividad";
   static BASE_ROUTE = "/actividades";
@@ -27,6 +25,6 @@ export class Actividad {
   }
 
   constructor(data: Partial<Actividad> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

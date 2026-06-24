@@ -1,5 +1,6 @@
-export class RegistroEvento {
-  id?: string;
+import { ModeloBase } from "../types/ModeloBase.model";
+
+export class RegistroEvento extends ModeloBase {
   idCarrera?: string;
   idUnidadAcademica?: string;
   idEvento?: string;
@@ -27,6 +28,6 @@ export class RegistroEvento {
   }
 
   constructor(data: Partial<RegistroEvento> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

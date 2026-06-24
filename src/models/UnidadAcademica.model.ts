@@ -1,15 +1,12 @@
 import type { Carrera } from "./Carrera.model";
+import { ModeloBase } from "../types/ModeloBase.model";
 
-export class UnidadAcademica {
-  id?: string;
+export class UnidadAcademica extends ModeloBase {
   nombre?: string;
   descripcion?: string;
   telefono?: string;
   correo?: string;
   estado?: string;
-  creado?: string;
-  modificado?: string;
-  eliminado?: string;
 
   carreras?: Carrera[];
 
@@ -33,6 +30,6 @@ export class UnidadAcademica {
   }
 
   constructor(data: Partial<UnidadAcademica> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

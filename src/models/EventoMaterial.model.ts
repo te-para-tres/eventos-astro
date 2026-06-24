@@ -1,14 +1,11 @@
 import type { Evento } from "./Evento.model";
 import type { Material } from "./Material.model";
+import { ModeloBase } from "../types/ModeloBase.model";
 
-export class EventoMaterial {
-  id?: string;
+export class EventoMaterial extends ModeloBase {
   idEvento?: string;
   idMaterial?: string;
   cantidad?: number;
-  creado?: string;
-  modificado?: string;
-  eliminado?: string;
   evento?: Evento;
   material?: Material;
 
@@ -32,6 +29,6 @@ export class EventoMaterial {
   }
 
   constructor(data: Partial<EventoMaterial> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

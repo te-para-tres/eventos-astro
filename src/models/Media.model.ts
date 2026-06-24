@@ -1,5 +1,6 @@
-export class Media {
-  id?: string;
+import { ModeloBase } from "../types/ModeloBase.model";
+
+export class Media extends ModeloBase {
   idUsuario?: number;
   nombre?: string;
   uuid?: string;
@@ -8,8 +9,6 @@ export class Media {
   mimetype?: string;
   ruta?: string;
   descripcion?: string;
-  creado?: string;
-  modificado?: string;
 
   static CLASS_NAME = "Media";
   static BASE_ROUTE = "/media";
@@ -32,6 +31,6 @@ export class Media {
   }
 
   constructor(data: Partial<Media> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

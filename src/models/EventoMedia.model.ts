@@ -1,13 +1,10 @@
 import type { Evento } from "./Evento.model";
 import type { Media } from "./Media.model";
+import { ModeloBase } from "../types/ModeloBase.model";
 
-export class EventoMedia {
-  id?: string;
+export class EventoMedia extends ModeloBase {
   idMedia?: string;
   idEvento?: string;
-  creado?: string;
-  modificado?: string;
-  eliminado?: string;
 
   evento?: Evento;
   media?: Media;
@@ -32,6 +29,6 @@ export class EventoMedia {
   }
 
   constructor(data: Partial<EventoMedia> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }

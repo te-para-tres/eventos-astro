@@ -5,9 +5,9 @@ import type { EventoMaterial } from "./EventoMaterial.model";
 import type { EventoMedia } from "./EventoMedia.model";
 import type { Media } from "./Media.model";
 import type { UnidadAcademica } from "./UnidadAcademica.model";
+import { ModeloBase } from "../types/ModeloBase.model";
 
-export class Evento {
-  id?: string;
+export class Evento extends ModeloBase {
   idUnidadAcademica?: string;
   idCategoriaEvento?: string;
   idActividad?: string;
@@ -23,9 +23,6 @@ export class Evento {
   lugar?: string;
   latitud?: number;
   longitud?: number;
-  creado?: string;
-  modificado?: string;
-  eliminado?: string;
   fechaCancelacion?: string;
   visibilidad?: string;
 
@@ -57,6 +54,6 @@ export class Evento {
   }
 
   constructor(data: Partial<Evento> = {}) {
-    Object.assign(this, data);
+    super(data);
   }
 }
