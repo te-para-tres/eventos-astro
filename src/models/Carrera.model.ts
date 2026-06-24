@@ -1,5 +1,6 @@
 import type { UnidadAcademica } from "./UnidadAcademica.model";
 import { ModeloBase } from "../types/ModeloBase.model";
+import type { Evento } from "./Evento.model";
 
 export class Carrera extends ModeloBase {
   idUnidadAcademica?: string;
@@ -8,6 +9,7 @@ export class Carrera extends ModeloBase {
   tipo?: string;
   estado?: string;
   unidadAcademica?: UnidadAcademica;
+  eventos?: Evento[];
 
   static CLASS_NAME = "Carrera";
   static BASE_ROUTE = "/carreras";
@@ -17,7 +19,7 @@ export class Carrera extends ModeloBase {
   };
 
   static EXPAND = {
-    DEFAULT: "unidadAcademica",
+    DEFAULT: "unidadAcademica,eventos",
   };
 
   static fromJson(data: Partial<Carrera>) {

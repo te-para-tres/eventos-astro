@@ -1,0 +1,38 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import type { Carrera } from "@/models/Carrera.model";
+import { getCarreras } from "@/services/departamentos";
+
+const carreras = await getCarreras({
+  ordenar: "nombre-asc",
+});
+---
+
+<Layout title="Departamentos">
+  <div class="max-w-7xl mx-auto px-6 py-16">
+    <h1 class="text-4xl font-extrabold mb-10">Departamentos</h1>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        carreras.map((c: Carrera) => (
+          <a
+            href={`/departamentos/${c.id}`}
+            class="border rounded-xl p-6 hover:shadow-lg transition cursor-pointer group"
+          >
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-building" />
+              </div>
+              <div>
+                <h2 class="font-bold group-hover:text-primary">
+                  {c.nombre ?? "Sin nombre"}
+                </h2>
+                <p class="text-xs text-gray-500">{c.tipo ?? "—"}</p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600">{c.descripcion ?? ""}</p>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</Layout>
