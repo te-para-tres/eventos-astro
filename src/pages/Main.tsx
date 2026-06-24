@@ -4,6 +4,7 @@ import { Evento as EventoModel } from "../models/Evento.model";
 import { Actividad as ActividadModel } from "../models/Actividad.model";
 import type { CategoriaResponseItem, UnidadAcademicaResponseItem } from "@/types/catalogos";
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationEllipsis, PaginationLink, PaginationNext } from "@/components/ui/pagination";
+import EventosCalendario from "@/components/EventosCalendario";
 
 const TODO_CAMPUS = "Todos los Campuses";
 const TODO_CATEGORIA = "Todas las Categorías";
@@ -394,6 +395,7 @@ export default function EventosPage() {
           </div>
         </>
       )}
+      <EventosCalendario />
     </div>
   );
 }
