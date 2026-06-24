@@ -17,7 +17,7 @@ export interface IRequest {
     body: any;
 }
 
-const API_URL = "https://api.eventues.app/";
+export const API_URL = "https://api.eventues.app/";
 export interface IHttpService {
     get: <T>(
         endpoint: string,

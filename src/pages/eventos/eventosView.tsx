@@ -1,25 +1,83 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { API_URL, http } from "../../hooks/http";
+import { Evento } from "../../models/Evento.model";
 import { Progress } from "../../components/ui/Progress";
-import "../../styles/global.css"
 
-const CAPACIDAD = 200;
-const INICIAL_CONFIRMADOS = 42;
+function formatDateLabel(fechaInicio?: string, fechaFin?: string): string {
+  if (!fechaInicio) return "";
+  const inicio = new Date(fechaInicio);
+  const dia = inicio.toLocaleDateString("es-MX", { day: "2-digit", month: "short" });
+  const horaInicio = inicio.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  if (!fechaFin) return `${dia}, ${horaInicio}`;
+  const fin = new Date(fechaFin);
+  const horaFin = fin.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  return `${dia}, ${horaInicio} – ${horaFin}`;
+}
+
+function formatDateLong(fecha?: string): string {
+  if (!fecha) return "";
+  return new Date(fecha).toLocaleDateString("es-MX", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function formatTimeRange(fechaInicio?: string, fechaFin?: string): string {
+  if (!fechaInicio || !fechaFin) return "";
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(fechaFin);
+  const fmt = (d: Date) =>
+    d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  return `${fmt(inicio)} — ${fmt(fin)} (MST)`;
+}
 
 const EventosView: React.FC = () => {
-  const [confirmados, setConfirmados] = useState(INICIAL_CONFIRMADOS);
+  const [evento, setEvento] = useState<Evento | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [confirmados, setConfirmados] = useState(0);
   const [confirmado, setConfirmado] = useState(false);
   const [mostrarToast, setMostrarToast] = useState(false);
   const [toastCancelacion, setToastCancelacion] = useState(false);
   const [visible, setVisible] = useState(false);
   const [countAnimating, setCountAnimating] = useState(false);
 
-  const porcentaje = (confirmados / CAPACIDAD) * 100;
-  const lleno = confirmados >= CAPACIDAD && !confirmado;
+  const capacidad = evento?.capacidadMaxima ?? 200;
+  const porcentaje = (confirmados / capacidad) * 100;
+  const lleno = confirmados >= capacidad && !confirmado;
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
+
+  const obtenerEvento = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const idEvento = params.get("id");
+
+      const response = await http.get<Evento[]>(
+        `${Evento.ENDPOINTS.DEFAULT}${idEvento ? `?id=${idEvento}&` : "?"}expand=${Evento.EXPAND.DEFAULT}&limite=1`
+      );
+
+      if (response.status === 200 && Array.isArray(response.resultado) && response.resultado.length > 0) {
+        const rawData = response.resultado[0] as Record<string, unknown>;
+        const eventoInstancia = new Evento(rawData as Partial<Evento>);
+        setEvento(eventoInstancia);
+        setConfirmados(eventoInstancia.capacidadMinima ?? 42);
+      }
+    } catch (error) {
+      console.error("Error al obtener evento:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void obtenerEvento();
+  }, [obtenerEvento]);
 
   const animateCount = () => {
     setCountAnimating(true);
@@ -45,6 +103,35 @@ const EventosView: React.FC = () => {
     setTimeout(() => setToastCancelacion(false), 4000);
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <i className="fa-solid fa-spinner fa-spin text-3xl text-primary"></i>
+      </div>
+    );
+  }
+
+  if (!evento) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-gray-400 gap-3">
+        <i className="fa-solid fa-calendar-xmark text-4xl"></i>
+        <p className="text-sm">No se encontró el evento.</p>
+      </div>
+    );
+  }
+
+  const imagenSrc = evento.imagenDestacada?.ruta
+    ? `${API_URL}recursos${evento.imagenDestacada.ruta}`
+    : "/img/image.png";
+
+  const fechaLarga = formatDateLong(evento.fechaInicio);
+  const horaRango = formatTimeRange(evento.fechaInicio, evento.fechaFin);
+  const ubicacion = evento.lugar
+    ? `${evento.lugar}${evento.unidadAcademica ? `, ${evento.unidadAcademica.nombre}` : ""}`
+    : evento.unidadAcademica?.nombre ?? "Pendiente";
+
+  const categoriaNombre = evento.categoriaEvento?.nombre ?? "Evento";
+
   return (
     <main className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 max-w-7xl mx-auto">
 
@@ -57,8 +144,8 @@ const EventosView: React.FC = () => {
               style={{ opacity: visible ? 1 : 0, transform: visible ? "scale(1)" : "scale(0.97)", transition: "opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s" }}
             >
               <img
-                src="/img/image.png"
-                alt="Evento"
+                src={imagenSrc}
+                alt={evento.nombre ?? "Evento"}
                 className="w-full h-44 sm:h-64 md:h-80 lg:h-105 object-cover"
                 style={{ transition: "transform 0.4s ease" }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
@@ -70,8 +157,7 @@ const EventosView: React.FC = () => {
               className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-primary leading-tight"
               style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(12px)", transition: "opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s" }}
             >
-              Conoce al creador del modelo de código más utilizado en la UES:
-              Gemini y sus funciones
+              {evento.nombre}
             </h1>
 
             <div
@@ -80,28 +166,22 @@ const EventosView: React.FC = () => {
             >
               <p className="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
                 <i className="fa-regular fa-calendar"></i>
-                Viernes, 24 de Octubre, 2026
+                {fechaLarga}
               </p>
               <p className="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
                 <i className="fa-regular fa-clock"></i>
-                9:00 AM – 4:30 PM
+                {horaRango}
               </p>
               <p className="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
                 <i className="fa-solid fa-location-dot"></i>
-                Centro de Innovación, Aula K03
+                {ubicacion}
               </p>
             </div>
 
             <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease 0.4s" }}>
               <h2 className="font-bold text-base sm:text-lg mb-2 text-gray-800">SOBRE ESTE EVENTO</h2>
               <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                Únase a nosotros en nuestro simposio anual insignia donde cerramos la brecha entre la
-                inteligencia artificial de vanguardia y la ética institucional. Este año, reuniremos a
-                investigadores de clase mundial, responsables de políticas y líderes estudiantiles para
-                discutir cómo los modelos de IA están remodelando el panorama de la integridad
-                académica y el aprendizaje personalizado. El evento contará con conferencias magistrales
-                de líderes de la industria, seguidas de sesiones interactivas y un almuerzo de
-                networking en el atrio. Ya sea que seas estudiante de ciencias de la computación
+                {evento.descripcion}
               </p>
             </div>
 
@@ -141,7 +221,7 @@ const EventosView: React.FC = () => {
                   className="text-xs sm:text-sm"
                   style={{ transition: "transform 0.3s ease", transform: countAnimating ? "scale(1.3)" : "scale(1)", display: "inline-block" }}
                 >
-                  <b className="text-primary">{confirmados}</b> / {CAPACIDAD}
+                  <b className="text-primary">{confirmados}</b> / {capacidad}
                 </span>
               </div>
 
@@ -185,37 +265,38 @@ const EventosView: React.FC = () => {
               )}
             </div>
 
-            <div
-              className="p-4 sm:p-5 rounded-xl border shadow-sm space-y-4"
-              style={{ transition: "transform 0.2s ease, box-shadow 0.2s ease" }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.08)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = ""; }}
-            >
-              <p className="text-[10px] sm:text-xs text-gray-400">ORGANIZADO POR</p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-full flex items-center justify-center text-white shrink-0">
-                  <i className="fa-solid fa-building"></i>
-                </div>
-                <div>
-                  <a href="/departamentos" className="font-semibold text-xs sm:text-sm hover:underline">
-                    Departamento de IA
-                  </a>
-                  <p className="text-[10px] sm:text-xs text-gray-500">División de Ingeniería</p>
-                </div>
-              </div>
-              <button
-                onClick={() => (window.location.href = "/departamentos")}
-                className="w-full border py-2 rounded-lg text-primary font-medium text-xs sm:text-sm cursor-pointer"
-                style={{ transition: "background-color 0.2s ease, color 0.2s ease, transform 0.15s ease" }}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--color-primary)"; e.currentTarget.style.color = "white"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ""; e.currentTarget.style.color = ""; e.currentTarget.style.transform = "translateY(0)"; }}
+            {evento.unidadAcademica && (
+              <a
+                target="_blank"
+                href="/departamentos"
+                className="mb-4"
               >
-                Ver departamento
-              </button>
-            </div>
+                <div
+                  className="p-4 sm:p-5 rounded-xl border shadow-sm space-y-4 cursor-pointer"
+                  style={{ transition: "transform 0.2s ease, box-shadow 0.2s ease" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.08)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = ""; }}
+                >
+                  <p className="text-[10px] sm:text-xs text-gray-400">ORGANIZADO POR</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-full flex items-center justify-center text-white shrink-0">
+                      <i className="fa-solid fa-building"></i>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-xs sm:text-sm">
+                        {evento.unidadAcademica.nombre}
+                      </span>
+                      {evento.carrera && (
+                        <p className="text-[10px] sm:text-xs text-gray-500">{evento.carrera.nombre}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </a>
+            )}
 
             <div className="space-y-3">
-              <p className="text-[10px] sm:text-xs text-gray-400">EVENTOS RELACIONADOS</p>
+              <p className="text-[10px] sm:text-xs text-gray-400 pt-4">EVENTOS RELACIONADOS</p>
               <div className="flex flex-row xl:flex-col gap-3 overflow-x-auto pb-1 xl:pb-0 xl:overflow-visible">
                 {[1, 2, 3].map((item, i) => (
                   <div
