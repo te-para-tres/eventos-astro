@@ -6,10 +6,9 @@ import { getCarreras } from "@/services/departamentos";
 export const prerender = false;
 
 const carreras = await getCarreras({
-  ordenar: "nombre-ac"
+  ordenar: "nombre-asc"
 });
 
-console.log(carreras)
 ---
 
 <Layout title="Departamentos">
