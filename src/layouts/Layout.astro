@@ -7,33 +7,49 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Toaster } from "@/components/ui/sonner";
 interface Props {
   title: string;
+  description?: string;
   ogTitle?: string;
   ogImage?: string;
-  ogUrl?: string;
   ogDescription?: string;
-  header?: boolean;
 }
+
+const SITE_NAME = "Eventues";
+const DEFAULT_DESCRIPTION =
+  "Tablero de eventos de la Universidad Estatal de Sonora: inscríbete y descubre los próximos eventos universitarios.";
 
 const {
   title,
+  description = DEFAULT_DESCRIPTION,
   ogTitle,
-  ogImage,
-  ogUrl,
-  ogDescription,
-  header = true,
+  ogImage = "/img/image.png",
+  ogDescription = description,
 } = Astro.props;
+
+const pageTitle = `${title} - ${SITE_NAME}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).href;
+const socialTitle = ogTitle ?? pageTitle;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Examen ciberseguirdad - Seguridad" />
+    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
-    <meta property="og:title" content={ogTitle} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:url" content={ogUrl} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={socialTitle} />
     <meta property="og:description" content={ogDescription} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={canonical} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -47,13 +63,11 @@ const {
       rel="stylesheet"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{pageTitle}</title>
     <ClientRouter />
   </head>
   <body>
-    <header class="w-full h-auto">
-      <Navbar title={title} />
-    </header>
+    <Navbar title={title} />
     <main>
       <Toaster client:only="react" />
       <slot />

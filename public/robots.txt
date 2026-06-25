@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qeventr.web.app/sitemap-index.xml

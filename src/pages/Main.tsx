@@ -95,9 +95,10 @@ function DateFilterPicker({ value, onChange, disabled = false }: DateFilterPicke
         )}
       </div>
       <div className="flex items-center gap-2">
-        <i className="fa-regular fa-calendar text-primary"></i>
+        <i className="fa-regular fa-calendar text-primary" aria-hidden="true"></i>
         <input
           type="date"
+          aria-label="Filtrar por fecha"
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
@@ -300,9 +301,10 @@ export default function EventosPage() {
           <div className="flex gap-2 items-end">
             <button
               onClick={limpiar}
+              aria-label="Limpiar filtros"
               className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center gap-1.5 cursor-pointer"
             >
-              <i className="fa-solid fa-filter-circle-xmark text-xs"></i>
+              <i className="fa-solid fa-filter-circle-xmark text-xs" aria-hidden="true"></i>
             </button>
           </div>
         </div>

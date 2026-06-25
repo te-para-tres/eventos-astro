@@ -62,9 +62,10 @@ function EventDetailModal({
           )}
           <button
             onClick={onClose}
+            aria-label="Cerrar"
             className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition"
           >
-            <i className="fa-solid fa-xmark text-sm"></i>
+            <i className="fa-solid fa-xmark text-sm" aria-hidden="true"></i>
           </button>
           {event.categoriaEvento?.nombre && (
             <span className="absolute bottom-3 left-3 px-3 py-1 text-xs font-bold bg-primary text-white rounded">

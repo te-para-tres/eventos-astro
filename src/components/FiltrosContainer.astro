@@ -2,6 +2,7 @@
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     <div class="flex flex-col gap-2">
       <label
+        for="filtro-campus"
         class="text-xs font-bold uppercase tracking-wider text-gray-500 pl-1"
       >
         Campus
@@ -10,9 +11,11 @@
       <div class="relative">
         <i
           class="fa-solid fa-location-dot absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+          aria-hidden="true"
         ></i>
 
         <select
+          id="filtro-campus"
           class="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer"
         >
           <option>Todos los Campuses</option>
@@ -27,6 +30,7 @@
 
     <div class="flex flex-col gap-2">
       <label
+        for="filtro-categoria"
         class="text-xs font-bold uppercase tracking-wider text-gray-500 pl-1"
       >
         Categoría
@@ -35,9 +39,11 @@
       <div class="relative">
         <i
           class="fa-solid fa-layer-group absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+          aria-hidden="true"
         ></i>
 
         <select
+          id="filtro-categoria"
           class="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer"
         >
           <option>Todas las Categorías</option>
@@ -52,6 +58,7 @@
 
     <div class="flex flex-col gap-2">
       <label
+        for="filtro-fecha"
         class="text-xs font-bold uppercase tracking-wider text-gray-500 pl-1"
       >
         Fecha
@@ -60,10 +67,12 @@
       <div class="relative">
         <i
           class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+          aria-hidden="true"
         ></i>
 
         <input
           type="date"
+          id="filtro-fecha"
           class="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
@@ -73,7 +82,7 @@
       <button
         class="w-full h-11.5 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition hover:cursor-pointer"
       >
-        <i class="fa-solid fa-filter-circle-xmark text-sm"></i>
+        <i class="fa-solid fa-filter-circle-xmark text-sm" aria-hidden="true"></i>
         Reiniciar
       </button>
     </div>

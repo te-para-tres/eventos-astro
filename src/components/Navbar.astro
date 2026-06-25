@@ -21,7 +21,7 @@ const { title } = Astro.props;
         <div
           class="bg-primary rounded-lg p-[0.42rem] flex items-center justify-center text-white transition-all duration-180 group-hover:bg-primary-hover group-hover:shadow-[0_4px_12px_rgba(123,22,62,0.28)]"
         >
-          <span class="material-icons" style="font-size: 1.15rem;">school</span>
+          <span class="material-icons" style="font-size: 1.15rem;" aria-hidden="true">school</span>
         </div>
         <div class="flex flex-col">
           <span
@@ -40,7 +40,7 @@ const { title } = Astro.props;
       {
         title && (
           <div class="hidden md:flex items-center pl-5 border-l border-border-custom">
-            <h1 class="text-[0.88rem] font-medium text-text-muted">{title}</h1>
+            <p class="text-[0.88rem] font-medium text-text-muted">{title}</p>
           </div>
         )
       }

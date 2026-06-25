@@ -44,7 +44,11 @@ const porcentaje = Math.min(100, (confirmados / capacidad) * 100);
 const lleno = confirmados >= capacidad;
 ---
 
-<Layout title="Eventos">
+<Layout
+  title={evento?.nombre ?? "Evento"}
+  description={evento?.descripcion ?? "Evento de la Universidad Estatal de Sonora."}
+  ogImage={imagenSrc}
+>
   {
     !evento ? (
       <div class="flex flex-col items-center justify-center min-h-screen text-gray-400 gap-3">
