@@ -34,8 +34,8 @@ function EventCard({ event }: { event: EventoModel }) {
   const availabilityBg = esLimitado ? "bg-orange-500" : "bg-emerald-500";
 
   return (
-    <div
-      onClick={() => (window.location.href = `${EventoModel.BASE_ROUTE}?id=${event.id}`)}
+    <a
+      href={`/eventos/${event.id}`}
       className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col transition hover:shadow-xl hover:-translate-y-1 group cursor-pointer"
     >
       <div className="relative h-52 overflow-hidden">
@@ -67,7 +67,7 @@ function EventCard({ event }: { event: EventoModel }) {
           </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 
