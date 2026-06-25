@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { Carrera } from "@/models/Carrera.model";
-import { getCarreras } from "@/services/departamentos";
+import { getCarreras } from "@/services/carreras";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 
@@ -137,7 +137,11 @@ const unidad = carrers?.unidadAcademica;
                     </div>
                     <div class="min-w-0">
                       <p class="text-xs text-gray-400">
-                        {ev.fechaInicio ? dayjs(ev.fechaInicio).locale("es").format("D MMM YYYY") : "—"}
+                        {ev.fechaInicio
+                          ? dayjs(ev.fechaInicio)
+                              .locale("es")
+                              .format("D MMM YYYY")
+                          : "—"}
                       </p>
                       <p class="text-sm font-medium leading-snug truncate group-hover:text-primary transition">
                         {ev.nombre ?? "Sin nombre"}
