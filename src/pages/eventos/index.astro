@@ -1,9 +1,0 @@
----
-import Layout from "../../layouts/Layout.astro";
-import EventosView from "./eventosView";
-const { id } = Astro.params;
---- 
-
-<Layout title="Eventos">
-  <EventosView client:only="react"/>
-</Layout>

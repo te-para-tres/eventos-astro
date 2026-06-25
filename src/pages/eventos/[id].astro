@@ -1,0 +1,318 @@
+---
+import { getEventos } from "@/services/eventos";
+import Layout from "../../layouts/Layout.astro";
+import { Evento } from "@/models/Evento.model";
+import { API_URL } from "@/hooks/http";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+
+export const prerender = false;
+
+dayjs.locale("es");
+
+function formatDateLong(fecha?: string): string {
+  return fecha ? dayjs(fecha).format("dddd, D [de] MMMM [de] YYYY") : "";
+}
+
+function formatTimeRange(fechaInicio?: string, fechaFin?: string): string {
+  if (!fechaInicio || !fechaFin) return "";
+  return `${dayjs(fechaInicio).format("HH:mm")} — ${dayjs(fechaFin).format("HH:mm")} (MST)`;
+}
+
+const { id } = Astro.params;
+
+const eventos = await getEventos({
+  id: id,
+  expand: Evento.EXPAND.DEFAULT,
+});
+
+const evento = eventos[0];
+
+const imagenSrc = evento?.imagenDestacada?.ruta
+  ? `${API_URL}recursos${evento.imagenDestacada.ruta}`
+  : "";
+
+const fechaLarga = formatDateLong(evento?.fechaInicio);
+const horaRango = formatTimeRange(evento?.fechaInicio, evento?.fechaFin);
+const ubicacion = evento?.lugar
+  ? `${evento.lugar}${evento.unidadAcademica ? `, ${evento.unidadAcademica.nombre}` : ""}`
+  : (evento?.unidadAcademica?.nombre ?? "Pendiente");
+
+const capacidad = evento?.capacidadMaxima ?? 200;
+const confirmados = evento?.capacidadMinima ?? 42;
+const porcentaje = Math.min(100, (confirmados / capacidad) * 100);
+const lleno = confirmados >= capacidad;
+---
+
+<Layout title="Eventos">
+  {
+    !evento ? (
+      <div class="flex flex-col items-center justify-center min-h-screen text-gray-400 gap-3">
+        <i class="fa-solid fa-calendar-xmark text-4xl" />
+        <p class="text-sm">No se encontró el evento.</p>
+      </div>
+    ) : (
+      <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-4 max-w-7xl mx-auto">
+        <div class="page-enter">
+          <section class="flex flex-col xl:grid xl:grid-cols-12 gap-6 lg:gap-8">
+            <div class="xl:col-span-8 space-y-5 sm:space-y-6">
+              <div class="overflow-hidden rounded-xl shadow-md">
+                <img
+                  src={imagenSrc}
+                  alt={evento.nombre ?? "Evento"}
+                  class="w-full h-44 sm:h-64 md:h-80 lg:h-105 object-cover transition-transform duration-400 hover:scale-[1.03]"
+                />
+              </div>
+
+              <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-primary leading-tight">
+                {evento.nombre}
+              </h1>
+
+              <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm text-gray-600">
+                <p class="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
+                  <i class="fa-regular fa-calendar" />
+                  {fechaLarga}
+                </p>
+                <p class="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
+                  <i class="fa-regular fa-clock" />
+                  {horaRango}
+                </p>
+                <p class="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
+                  <i class="fa-solid fa-location-dot" />
+                  {ubicacion}
+                </p>
+              </div>
+
+              <div>
+                <h2 class="font-bold text-base sm:text-lg mb-2 text-gray-800">
+                  SOBRE ESTE EVENTO
+                </h2>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                  {evento.descripcion}
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {
+                  [
+                    {
+                      icon: "fa-solid fa-utensils",
+                      title: "CATERING INCLUIDO",
+                      desc: "Café y alimentos incluidos.",
+                    },
+                    {
+                      icon: "fa-solid fa-file-lines",
+                      title: "CONSTANCIA DE ASISTENCIA",
+                      desc: "Se emitirán certificados digitales a los participantes para sus portafolios profesionales.",
+                    },
+                  ].map((item) => (
+                    <div class="p-3 sm:p-4 border-l-4 border-yellow-400 bg-gray-50 rounded-lg transition hover:-translate-y-0.5 hover:shadow-lg">
+                      <p class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm md:text-base">
+                        <i class={item.icon} />
+                        {item.title}
+                      </p>
+                      <p class="text-xs sm:text-sm text-gray-500 mt-1">{item.desc}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+
+            <div class="xl:col-span-4 space-y-5 sm:space-y-6">
+              <div
+                id="inscripcion"
+                data-capacidad={capacidad}
+                data-confirmados={confirmados}
+                class="p-4 sm:p-5 md:p-6 border-t-4 border-primary rounded-xl shadow-md space-y-4"
+              >
+                <div class="flex justify-between items-center text-[10px] sm:text-xs text-gray-400">
+                  <span>ESTUDIANTES INSCRITOS</span>
+                  <span class="text-xs sm:text-sm">
+                    <b id="contador" class="text-primary">{confirmados}</b> / {capacidad}
+                  </span>
+                </div>
+
+                <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    id="barra"
+                    class="h-full bg-primary transition-all duration-500"
+                    style={`width:${porcentaje}%`}
+                  />
+                </div>
+
+                <button
+                  id="btn-agotado"
+                  disabled
+                  class:list={[
+                    "w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-gray-200 text-gray-400 cursor-not-allowed",
+                    { hidden: !lleno },
+                  ]}
+                >
+                  CUPO AGOTADO
+                  <i class="fa-solid fa-ban" />
+                </button>
+
+                <button
+                  id="btn-confirmar"
+                  class:list={[
+                    "w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-black/75 text-white cursor-pointer transition hover:bg-primary hover:-translate-y-px active:scale-[0.97]",
+                    { hidden: lleno },
+                  ]}
+                >
+                  CONFIRMAR ASISTENCIA
+                  <i class="fa-solid fa-arrow-right" />
+                </button>
+
+                <div id="bloque-confirmado" class="hidden confirmed-enter space-y-2">
+                  <div class="w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-green-700 text-white">
+                    INSCRIPCIÓN CONFIRMADA
+                    <i class="fa-solid fa-check" />
+                  </div>
+                  <button
+                    id="btn-cancelar"
+                    class="w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 text-xs sm:text-sm border border-red-300 text-red-500 cursor-pointer transition hover:bg-red-50 hover:-translate-y-px"
+                  >
+                    <i class="fa-solid fa-xmark" />
+                    Cancelar inscripción
+                  </button>
+                </div>
+              </div>
+
+              {
+                evento.unidadAcademica && (
+                  <a href="/departamentos" class="block mb-4">
+                    <div class="p-4 sm:p-5 rounded-xl border shadow-sm space-y-4 cursor-pointer transition hover:-translate-y-0.5 hover:shadow-lg">
+                      <p class="text-[10px] sm:text-xs text-gray-400">ORGANIZADO POR</p>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-full flex items-center justify-center text-white shrink-0">
+                          <i class="fa-solid fa-building" />
+                        </div>
+                        <div>
+                          <span class="font-semibold text-xs sm:text-sm">
+                            {evento.unidadAcademica.nombre}
+                          </span>
+                          {evento.carrera && (
+                            <p class="text-[10px] sm:text-xs text-gray-500">
+                              {evento.carrera.nombre}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                )
+              }
+
+              <div class="space-y-3">
+                <p class="text-[10px] sm:text-xs text-gray-400 pt-4">EVENTOS RELACIONADOS</p>
+                <div class="flex flex-row xl:flex-col gap-3 overflow-x-auto pb-1 xl:pb-0 xl:overflow-visible">
+                  {
+                    [1, 2, 3].map(() => (
+                      <div class="shrink-0 w-44 sm:w-52 md:w-56 xl:w-auto flex items-center gap-3 p-2.5 sm:p-3 rounded-lg border cursor-pointer transition hover:-translate-y-0.5 hover:shadow-lg">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded flex items-center justify-center shrink-0">
+                          <i class="fa-solid fa-calendar-days text-gray-500" />
+                        </div>
+                        <div>
+                          <p class="text-[10px] sm:text-xs text-gray-400">12 NOV</p>
+                          <p class="text-xs sm:text-sm font-medium leading-snug">
+                            Taller de Ética en Robótica
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div
+          id="toast-ok"
+          class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg bg-green-600 text-white text-sm font-medium"
+          style="opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity 0.4s ease, transform 0.4s ease"
+        >
+          <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-check text-white text-xs" />
+          </div>
+          <div>
+            <p class="leading-tight">¡Inscripción confirmada!</p>
+            <p class="text-xs text-green-100 font-normal">Te esperamos pronto</p>
+          </div>
+        </div>
+
+        <div
+          id="toast-cancel"
+          class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg bg-red-500 text-white text-sm font-medium"
+          style="opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity 0.4s ease, transform 0.4s ease"
+        >
+          <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-xmark text-white text-xs" />
+          </div>
+          <div>
+            <p class="leading-tight">Inscripción cancelada</p>
+            <p class="text-xs text-red-100 font-normal">Puedes volver a inscribirte cuando quieras</p>
+          </div>
+        </div>
+      </main>
+    )
+  }
+</Layout>
+
+<script>
+  const card = document.getElementById("inscripcion");
+  if (card) {
+    const capacidad = Number(card.dataset.capacidad);
+    let confirmados = Number(card.dataset.confirmados);
+
+    const contador = document.getElementById("contador")!;
+    const barra = document.getElementById("barra")!;
+    const btnConfirmar = document.getElementById("btn-confirmar")!;
+    const btnCancelar = document.getElementById("btn-cancelar")!;
+    const btnAgotado = document.getElementById("btn-agotado")!;
+    const bloque = document.getElementById("bloque-confirmado")!;
+    const toastOk = document.getElementById("toast-ok")!;
+    const toastCancel = document.getElementById("toast-cancel")!;
+
+    let timer: ReturnType<typeof setTimeout>;
+
+    const render = () => {
+      contador.textContent = String(confirmados);
+      barra.style.width = Math.min(100, (confirmados / capacidad) * 100) + "%";
+    };
+
+    const ocultarToast = (el: HTMLElement) => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(16px)";
+      el.style.pointerEvents = "none";
+    };
+
+    const mostrarToast = (el: HTMLElement) => {
+      el.style.opacity = "1";
+      el.style.transform = "translateY(0)";
+      el.style.pointerEvents = "auto";
+      clearTimeout(timer);
+      timer = setTimeout(() => ocultarToast(el), 4000);
+    };
+
+    btnConfirmar.addEventListener("click", () => {
+      if (confirmados >= capacidad) return;
+      confirmados++;
+      render();
+      btnConfirmar.classList.add("hidden");
+      bloque.classList.remove("hidden");
+      ocultarToast(toastCancel);
+      mostrarToast(toastOk);
+    });
+
+    btnCancelar.addEventListener("click", () => {
+      confirmados--;
+      render();
+      bloque.classList.add("hidden");
+      btnAgotado.classList.add("hidden");
+      btnConfirmar.classList.remove("hidden");
+      ocultarToast(toastOk);
+      mostrarToast(toastCancel);
+    });
+  }
+</script>
