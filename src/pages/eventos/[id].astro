@@ -2,9 +2,24 @@
 import { getEventos } from "@/services/eventos";
 import Layout from "../../layouts/Layout.astro";
 import { Evento } from "@/models/Evento.model";
-import { API_URL } from "@/hooks/http";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  Ban,
+  Building2,
+  Calendar,
+  CalendarX,
+  Check,
+  Clock,
+  FileText,
+  MapPin,
+  Utensils,
+  X,
+} from "lucide-react";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import { API_URL, URL_RECURSOS } from "@/constants";
 
 export const prerender = false;
 
@@ -16,7 +31,7 @@ function formatDateLong(fecha?: string): string {
 
 function formatTimeRange(fechaInicio?: string, fechaFin?: string): string {
   if (!fechaInicio || !fechaFin) return "";
-  return `${dayjs(fechaInicio).format("HH:mm")} — ${dayjs(fechaFin).format("HH:mm")} (MST)`;
+  return `${dayjs(fechaInicio).format("h:mm A")} — ${dayjs(fechaFin).format("h:mm A")}`;
 }
 
 const { id } = Astro.params;
@@ -28,6 +43,23 @@ const eventos = await getEventos({
 
 const evento = eventos[0];
 
+const eventosPool = await getEventos({ expand: Evento.EXPAND.DEFAULT, limite: 6 });
+
+function getEventosRelacionados(lista: Evento[], actual?: Evento): Evento[] {
+  if (!actual) return [];
+  const palabras = (actual.nombre ?? "")
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((p) => p.length > 3);
+  const otros = lista.filter((e) => e.id !== actual.id);
+  const relacionados = otros.filter((e) =>
+    palabras.some((p) => (e.nombre ?? "").toLowerCase().includes(p)),
+  );
+  return (relacionados.length > 0 ? relacionados : otros).slice(0, 6);
+}
+
+const eventosRelacionados = getEventosRelacionados(eventosPool, evento);
+
 const imagenSrc = evento?.imagenDestacada?.ruta
   ? `${API_URL}recursos${evento.imagenDestacada.ruta}`
   : "";
@@ -38,10 +70,10 @@ const ubicacion = evento?.lugar
   ? `${evento.lugar}${evento.unidadAcademica ? `, ${evento.unidadAcademica.nombre}` : ""}`
   : (evento?.unidadAcademica?.nombre ?? "Pendiente");
 
-const capacidad = evento?.capacidadMaxima ?? 200;
-const confirmados = evento?.capacidadMinima ?? 42;
-const porcentaje = Math.min(100, (confirmados / capacidad) * 100);
-const lleno = confirmados >= capacidad;
+const capacidad = evento?.capacidadMaxima ?? 0;
+const inscritos = evento?.asistentes?.length ?? 0;
+const porcentaje = capacidad > 0 ? Math.min(100, Math.round((inscritos / capacidad) * 100)) : 0;
+const lleno = capacidad > 0 && inscritos >= capacidad;
 ---
 
 <Layout
@@ -52,7 +84,7 @@ const lleno = confirmados >= capacidad;
   {
     !evento ? (
       <div class="flex flex-col items-center justify-center min-h-screen text-gray-400 gap-3">
-        <i class="fa-solid fa-calendar-xmark text-4xl" />
+        <CalendarX className="w-10 h-10" aria-hidden="true" />
         <p class="text-sm">No se encontró el evento.</p>
       </div>
     ) : (
@@ -68,21 +100,21 @@ const lleno = confirmados >= capacidad;
                 />
               </div>
 
-              <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-primary leading-tight">
+              <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight">
                 {evento.nombre}
               </h1>
 
               <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm text-gray-600">
                 <p class="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
-                  <i class="fa-regular fa-calendar" />
-                  {fechaLarga}
+                  <Calendar className="w-4 h-4" aria-hidden="true" />
+                  <span class="first-letter:uppercase">{fechaLarga}</span>
                 </p>
                 <p class="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
-                  <i class="fa-regular fa-clock" />
+                  <Clock className="w-4 h-4" aria-hidden="true" />
                   {horaRango}
                 </p>
                 <p class="flex items-center gap-2 hover:text-primary transition-colors duration-200 cursor-default">
-                  <i class="fa-solid fa-location-dot" />
+                  <MapPin className="w-4 h-4" aria-hidden="true" />
                   {ubicacion}
                 </p>
               </div>
@@ -100,39 +132,42 @@ const lleno = confirmados >= capacidad;
                 {
                   [
                     {
-                      icon: "fa-solid fa-utensils",
+                      icon: Utensils,
                       title: "CATERING INCLUIDO",
                       desc: "Café y alimentos incluidos.",
                     },
                     {
-                      icon: "fa-solid fa-file-lines",
+                      icon: FileText,
                       title: "CONSTANCIA DE ASISTENCIA",
                       desc: "Se emitirán certificados digitales a los participantes para sus portafolios profesionales.",
                     },
-                  ].map((item) => (
-                    <div class="p-3 sm:p-4 border-l-4 border-yellow-400 bg-gray-50 rounded-lg transition hover:-translate-y-0.5 hover:shadow-lg">
-                      <p class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm md:text-base">
-                        <i class={item.icon} />
-                        {item.title}
-                      </p>
-                      <p class="text-xs sm:text-sm text-gray-500 mt-1">{item.desc}</p>
-                    </div>
-                  ))
+                  ].map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div class="p-3 sm:p-4 border-l-4 border-yellow-400 bg-gray-50 rounded-lg transition hover:-translate-y-0.5 hover:shadow-lg">
+                        <p class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm md:text-base">
+                          <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                          {item.title}
+                        </p>
+                        <p class="text-xs sm:text-sm text-gray-500 mt-1">{item.desc}</p>
+                      </div>
+                    );
+                  })
                 }
               </div>
             </div>
 
             <div class="xl:col-span-4 space-y-5 sm:space-y-6">
-              <div
+              <Card
                 id="inscripcion"
                 data-capacidad={capacidad}
-                data-confirmados={confirmados}
-                class="p-4 sm:p-5 md:p-6 border-t-4 border-primary rounded-xl shadow-md space-y-4"
+                data-confirmados={inscritos}
+                className="p-4 sm:p-5 md:p-6 gap-4 border-t-4 border-primary ring-0 shadow-md"
               >
-                <div class="flex justify-between items-center text-[10px] sm:text-xs text-gray-400">
+                <div class="flex justify-between items-center text-[10px] sm:text-xs text-primary font-medium">
                   <span>ESTUDIANTES INSCRITOS</span>
                   <span class="text-xs sm:text-sm">
-                    <b id="contador" class="text-primary">{confirmados}</b> / {capacidad}
+                    <b id="contador" class="text-primary">{inscritos}</b> / {capacidad}
                   </span>
                 </div>
 
@@ -144,52 +179,46 @@ const lleno = confirmados >= capacidad;
                   />
                 </div>
 
-                <button
+                <Button
                   id="btn-agotado"
                   disabled
-                  class:list={[
-                    "w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-gray-200 text-gray-400 cursor-not-allowed",
-                    { hidden: !lleno },
-                  ]}
+                  className={`w-full h-auto py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-gray-200 text-gray-400 cursor-not-allowed disabled:opacity-100 ${!lleno ? "hidden" : ""}`}
                 >
                   CUPO AGOTADO
-                  <i class="fa-solid fa-ban" />
-                </button>
+                  <Ban className="w-4 h-4" aria-hidden="true" />
+                </Button>
 
-                <button
-                  id="btn-confirmar"
-                  class:list={[
-                    "w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-black/75 text-white cursor-pointer transition hover:bg-primary hover:-translate-y-px active:scale-[0.97]",
-                    { hidden: lleno },
-                  ]}
+                <a
+                  href={`/registro-evento?id=${evento.id}`}
+                  class={`w-full h-auto py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-black/75 text-white cursor-pointer transition hover:bg-primary hover:-translate-y-px active:scale-[0.97] ${lleno ? "hidden" : ""}`}
                 >
-                  CONFIRMAR ASISTENCIA
-                  <i class="fa-solid fa-arrow-right" />
-                </button>
+                  Registrarse
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </a>
 
                 <div id="bloque-confirmado" class="hidden confirmed-enter space-y-2">
                   <div class="w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-green-700 text-white">
                     INSCRIPCIÓN CONFIRMADA
-                    <i class="fa-solid fa-check" />
+                    <Check className="w-4 h-4" aria-hidden="true" />
                   </div>
-                  <button
+                  <Button
                     id="btn-cancelar"
-                    class="w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 text-xs sm:text-sm border border-red-300 text-red-500 cursor-pointer transition hover:bg-red-50 hover:-translate-y-px"
+                    className="w-full h-auto py-2 rounded-lg font-medium flex items-center justify-center gap-2 text-xs sm:text-sm bg-transparent border border-red-300 text-red-500 cursor-pointer transition hover:bg-red-50 hover:-translate-y-px"
                   >
-                    <i class="fa-solid fa-xmark" />
+                    <X className="w-4 h-4" aria-hidden="true" />
                     Cancelar inscripción
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
 
               {
                 evento.unidadAcademica && (
-                  <a href="/departamentos" class="block mb-4">
-                    <div class="p-4 sm:p-5 rounded-xl border shadow-sm space-y-4 cursor-pointer transition hover:-translate-y-0.5 hover:shadow-lg">
-                      <p class="text-[10px] sm:text-xs text-gray-400">ORGANIZADO POR</p>
+                  <a href={`/departamentos/${evento?.carrera?.id}`} class="block mb-4">
+                    <Card className="p-4 sm:p-5 gap-4 border ring-0 shadow-sm cursor-pointer transition duration-300 hover:border hover:border-primary hover:-translate-y-0.5 hover:shadow-lg">
+                      <p class="text-[10px] sm:text-xs text-primary font-medium">ORGANIZADO POR</p>
                       <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-full flex items-center justify-center text-white shrink-0">
-                          <i class="fa-solid fa-building" />
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center text-white shrink-0">
+                          <Building2 className="w-4 h-4" aria-hidden="true" />
                         </div>
                         <div>
                           <span class="font-semibold text-xs sm:text-sm">
@@ -202,31 +231,48 @@ const lleno = confirmados >= capacidad;
                           )}
                         </div>
                       </div>
-                    </div>
+                    </Card>
                   </a>
                 )
               }
 
-              <div class="space-y-3">
-                <p class="text-[10px] sm:text-xs text-gray-400 pt-4">EVENTOS RELACIONADOS</p>
-                <div class="flex flex-row xl:flex-col gap-3 overflow-x-auto pb-1 xl:pb-0 xl:overflow-visible">
-                  {
-                    [1, 2, 3].map(() => (
-                      <div class="shrink-0 w-44 sm:w-52 md:w-56 xl:w-auto flex items-center gap-3 p-2.5 sm:p-3 rounded-lg border cursor-pointer transition hover:-translate-y-0.5 hover:shadow-lg">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded flex items-center justify-center shrink-0">
-                          <i class="fa-solid fa-calendar-days text-gray-500" />
-                        </div>
-                        <div>
-                          <p class="text-[10px] sm:text-xs text-gray-400">12 NOV</p>
-                          <p class="text-xs sm:text-sm font-medium leading-snug">
-                            Taller de Ética en Robótica
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
+              {
+                eventosRelacionados.length > 0 && (
+                  <div class="space-y-3">
+                    <p class="text-[10px] sm:text-xs text-primary font-semibold pt-4">EVENTOS RELACIONADOS</p>
+                    <div class="flex flex-col gap-3">
+                      {eventosRelacionados.map((ev) => (
+                        <a
+                          href={`/eventos/${ev?.id}`}
+                          class="flex items-center gap-3 p-2.5 rounded-lg border hover:border-primary hover:shadow-sm transition cursor-pointer group"
+                        >
+                          <div class="rounded-lg flex items-center justify-center shrink-0">
+                            <img
+                              src={`${URL_RECURSOS}/${ev?.imagenDestacada?.ruta}`}
+                              alt={ev?.nombre}
+                              class="size-10 object-cover rounded"
+                            />
+                          </div>
+                          <div class="min-w-0">
+                            <p class="text-xs text-stone-500">
+                              {ev?.fechaInicio
+                                ? dayjs(ev?.fechaInicio).locale("es").format("D MMM")
+                                : "—"}{" "}
+                              -{" "}
+                              {ev?.fechaFin
+                                ? dayjs(ev?.fechaFin).locale("es").format("D MMM YYYY")
+                                : "—"}
+                            </p>
+                            <p class="text-sm font-medium leading-snug truncate group-hover:text-primary transition">
+                              {ev?.nombre ?? ""}
+                            </p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
             </div>
           </section>
         </div>
@@ -237,7 +283,7 @@ const lleno = confirmados >= capacidad;
           style="opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity 0.4s ease, transform 0.4s ease"
         >
           <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-check text-white text-xs" />
+            <Check className="w-3.5 h-3.5 text-white" aria-hidden="true" />
           </div>
           <div>
             <p class="leading-tight">¡Inscripción confirmada!</p>
@@ -251,7 +297,7 @@ const lleno = confirmados >= capacidad;
           style="opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity 0.4s ease, transform 0.4s ease"
         >
           <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-xmark text-white text-xs" />
+            <X className="w-3.5 h-3.5 text-white" aria-hidden="true" />
           </div>
           <div>
             <p class="leading-tight">Inscripción cancelada</p>

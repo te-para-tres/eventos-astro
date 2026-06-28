@@ -6,10 +6,11 @@ import { CategoriaEvento } from "../models/CategoriaEvento.model";
 import { Actividad } from "../models/Actividad.model";
 import QuerySelector from "@/components/QuerySelector";
 import EventCard from "@/components/EventCard";
-import DateFilterPicker from "@/components/DateFilterPicker";
+import DatePicker from "@/components/DatePicker";
 import Paginacion from "@/components/Paginacion";
 import EventosCalendario from "@/components/EventosCalendario";
 import { Spinner } from "@/components/ui/spinner";
+import { CalendarX, FilterX } from "lucide-react";
 
 
 interface Paginacion {
@@ -33,6 +34,7 @@ const EventosPage: React.FC = () => {
     idCategoria: categoria,
     idUnidadAcademica: unidadAcademica,
     idActividad: actividad,
+    fecha,
     pagina,
     expand: Evento.EXPAND.DEFAULT,
     limite: LIMITE,
@@ -72,8 +74,6 @@ const EventosPage: React.FC = () => {
   useEffect(() => {
     setPagina(1);
   }, [unidadAcademica, categoria, actividad, fecha]);
-
-  console.log(eventos);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
@@ -122,7 +122,7 @@ const EventosPage: React.FC = () => {
             />
           </div>
 
-          <DateFilterPicker value={fecha} disabled={loading} onChange={setFecha} />
+          <DatePicker value={fecha} disabled={loading} onChange={setFecha} />
 
           <div className="flex gap-2 items-end">
             <button
@@ -130,7 +130,7 @@ const EventosPage: React.FC = () => {
               aria-label="Limpiar filtros"
               className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center gap-1.5 cursor-pointer"
             >
-              <i className="fa-solid fa-filter-circle-xmark text-xs" aria-hidden="true"></i>
+              <FilterX className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -142,7 +142,7 @@ const EventosPage: React.FC = () => {
         </div>
       ) : eventos.length === 0 ? (
         <div className="flex flex-col items-center py-24 text-gray-400 gap-3">
-          <i className="fa-solid fa-calendar-xmark text-4xl"></i>
+          <CalendarX className="w-10 h-10" aria-hidden="true" />
           <p className="text-sm">No se encontraron resultados.</p>
         </div>
       ) : (
