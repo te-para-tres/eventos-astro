@@ -6,6 +6,7 @@ import type { EventoMedia } from "./EventoMedia.model";
 import type { Media } from "./Media.model";
 import type { UnidadAcademica } from "./UnidadAcademica.model";
 import { ModeloBase } from "../types/ModeloBase.model";
+import type { Asistente } from "./Asistente.model";
 
 export class Evento extends ModeloBase {
   idUnidadAcademica?: string;
@@ -26,6 +27,7 @@ export class Evento extends ModeloBase {
   fechaCancelacion?: string;
   visibilidad?: string;
 
+  asistentes?: Asistente[];
   eventoMaterial?: EventoMaterial[];
   eventoMedia?: EventoMedia[];
   carrera?: Carrera;
@@ -42,7 +44,7 @@ export class Evento extends ModeloBase {
   };
 
   static EXPAND = {
-    DEFAULT: "carrera,categoriaEvento,imagenDestacada,unidadAcademica,qr,eventoMaterials,actividad,eventoMedia",
+    DEFAULT: "carrera,categoriaEvento,imagenDestacada,unidadAcademica,qr,eventoMaterials,actividad,eventoMedia,asistentes",
   };
 
   static fromJson(data: Partial<Evento>) {

@@ -19,7 +19,7 @@ export class Carrera extends ModeloBase {
   };
 
   static EXPAND = {
-    DEFAULT: "unidadAcademica,eventos",
+    DEFAULT: "unidadAcademica,eventos, eventos.imagenDestacada",
   };
 
   static fromJson(data: Partial<Carrera>) {
