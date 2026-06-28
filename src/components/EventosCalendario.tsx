@@ -113,7 +113,7 @@ function EventDetailModal({
           <div className="flex gap-3">
             <button
               onClick={() =>
-                (window.location.href = `${EventoModel.BASE_ROUTE}?id=${event.id}`)
+                (window.location.href = `${EventoModel.BASE_ROUTE}/${event.id}`)
               }
               className="flex-1 bg-primary text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-primary/90 transition cursor-pointer"
             >

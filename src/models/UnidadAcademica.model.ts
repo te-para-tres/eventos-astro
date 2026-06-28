@@ -14,7 +14,7 @@ export class UnidadAcademica extends ModeloBase {
   static BASE_ROUTE = "/unidades-academicas";
 
   static ENDPOINTS = {
-    DEFAULT: "api/unidades-academicas.json",
+    DEFAULT: "api/unidad-academica.json",
   };
 
   static EXPAND = {
