@@ -1,5 +1,5 @@
 ---
-
+import { Mail, School, Share2 } from "lucide-react";
 ---
 
 <footer class="w-full mt-24 bg-bg-alt border-t border-border-custom pt-16 pb-8">
@@ -10,7 +10,7 @@
           <div
             class="bg-primary text-white p-1.5 rounded flex items-center justify-center"
           >
-            <span class="material-icons" aria-hidden="true">school</span>
+            <School className="w-6 h-6" aria-hidden="true" />
           </div>
           <span class="text-xl font-bold text-primary">UES</span>
         </div>
@@ -137,14 +137,14 @@
           href="mailto:correo@ejemplo.com"
           class="text-primary hover:text-primary-hover transition-colors duration-200"
         >
-          <i class="fa-solid fa-envelope text-xl"></i>
+          <Mail className="w-5 h-5" aria-hidden="true" />
         </a>
 
         <a
           href="#"
           class="text-primary hover:text-primary-hover transition-colors duration-200"
         >
-          <i class="fa-solid fa-share-nodes text-xl"></i>
+          <Share2 className="w-5 h-5" aria-hidden="true" />
         </a>
       </div>
     </div>

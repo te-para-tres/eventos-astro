@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import { Clock, MapPin } from "lucide-react";
 import { Evento as EventoModel } from "@/models/Evento.model";
 import { API_URL } from "@/constants";
 
@@ -45,11 +46,11 @@ export default function EventCard({ event }: { event: EventoModel }) {
         </h3>
         <div className="flex flex-col gap-2 text-sm text-gray-500 mt-auto">
           <div className="flex items-center gap-2">
-            <i className="fa-solid fa-clock text-primary" aria-hidden="true"></i>
+            <Clock className="w-4 h-4 text-primary" aria-hidden="true" />
             {formatDateLabel(event.fechaInicio, event.fechaFin)}
           </div>
           <div className="flex items-center gap-2">
-            <i className="fa-solid fa-location-dot text-primary" aria-hidden="true"></i>
+            <MapPin className="w-4 h-4 text-primary" aria-hidden="true" />
             {event.lugar ?? event.unidadAcademica?.nombre}
           </div>
         </div>

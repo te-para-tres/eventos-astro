@@ -1,3 +1,7 @@
+---
+import { Calendar, FilterX, Layers, MapPin } from "lucide-react";
+---
+
 <section class="bg-white mb-10">
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     <div class="flex flex-col gap-2">
@@ -9,10 +13,10 @@
       </label>
 
       <div class="relative">
-        <i
-          class="fa-solid fa-location-dot absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+        <MapPin
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
           aria-hidden="true"
-        ></i>
+        />
 
         <select
           id="filtro-campus"
@@ -37,10 +41,10 @@
       </label>
 
       <div class="relative">
-        <i
-          class="fa-solid fa-layer-group absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+        <Layers
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
           aria-hidden="true"
-        ></i>
+        />
 
         <select
           id="filtro-categoria"
@@ -65,10 +69,10 @@
       </label>
 
       <div class="relative">
-        <i
-          class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
+        <Calendar
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
           aria-hidden="true"
-        ></i>
+        />
 
         <input
           type="date"
@@ -82,7 +86,7 @@
       <button
         class="w-full h-11.5 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition hover:cursor-pointer"
       >
-        <i class="fa-solid fa-filter-circle-xmark text-sm" aria-hidden="true"></i>
+        <FilterX className="w-4 h-4" aria-hidden="true" />
         Reiniciar
       </button>
     </div>

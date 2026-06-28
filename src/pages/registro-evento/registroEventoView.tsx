@@ -8,11 +8,13 @@ import { navigate } from "astro:transitions/client";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Evento } from "@/models/Evento.model";
+import { Check, Clock, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import type { z } from "astro:content";
-import { API_URL, http } from "@/hooks/http";
+import { http } from "@/hooks/http";
+import type z from "zod";
+import { API_URL } from "@/constants";
 
 dayjs.locale("es");
 
@@ -117,7 +119,7 @@ const RegistroEventoView: React.FC = () => {
 
             <div className="flex flex-col gap-4 text-gray-600 mt-2">
               <div className="flex items-start gap-3">
-                <i className="fa-solid fa-clock text-primary mt-1"></i>
+                <Clock className="w-4 h-4 text-primary mt-1" aria-hidden="true" />
                 <div>
                   <p className="font-semibold text-gray-800 text-sm md:text-base">Fecha y Hora</p>
                   <p className="text-sm">
@@ -129,7 +131,7 @@ const RegistroEventoView: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <i className="fa-solid fa-location-dot text-primary mt-1"></i>
+                <MapPin className="w-4 h-4 text-primary mt-1" aria-hidden="true" />
                 <div>
                   <p className="font-semibold text-gray-800 text-sm md:text-base">Ubicacion</p>
                   <p className="text-sm">{evento?.lugar}</p>
@@ -158,8 +160,8 @@ const RegistroEventoView: React.FC = () => {
 
           {registrado ? (
             <div className="bg-emerald-50 border-2 border-emerald-500 text-emerald-800 p-8 rounded-xl flex flex-col items-center justify-center text-center animate-fade-in shadow-sm">
-              <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center text-3xl mb-4 shadow-lg transform transition-transform hover:scale-110">
-                <i className="fa-solid fa-check"></i>
+              <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mb-4 shadow-lg transform transition-transform hover:scale-110">
+                <Check className="w-8 h-8" aria-hidden="true" />
               </div>
               <h4 className="text-2xl font-bold mb-2">Registro Exitoso!</h4>
               <p className="text-emerald-700 text-sm md:text-base">
