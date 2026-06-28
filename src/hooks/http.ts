@@ -1,3 +1,4 @@
+import { API_URL } from "@/constants";
 import type { DefaultResponse, TPaginacion } from "../types/responded";
 
 export interface IRequestParams {
@@ -17,7 +18,6 @@ export interface IRequest {
     body: any;
 }
 
-export const API_URL = "https://api.eventues.app/";
 export interface IHttpService {
     get: <T>(
         endpoint: string,

@@ -3,8 +3,9 @@ import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { es } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { API_URL, http } from "../hooks/http";
-import { Evento as EventoModel } from "../models/Evento.model";
+import {http } from "../hooks/http";
+import { Evento } from "../models/Evento.model";
+import { API_URL } from "@/constants";
 
 const locales = { es };
 
@@ -21,14 +22,14 @@ interface CalendarEvent {
   title: string;
   start: Date;
   end: Date;
-  resource: EventoModel;
+  resource: Evento;
 }
 
 function EventDetailModal({
   event,
   onClose,
 }: {
-  event: EventoModel;
+  event: Evento;
   onClose: () => void;
 }) {
   const fechaInicio = event.fechaInicio ? new Date(event.fechaInicio) : null;
@@ -113,7 +114,7 @@ function EventDetailModal({
           <div className="flex gap-3">
             <button
               onClick={() =>
-                (window.location.href = `${EventoModel.BASE_ROUTE}/${event.id}`)
+                (window.location.href = `${Evento.BASE_ROUTE}/${event.id}`)
               }
               className="flex-1 bg-primary text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-primary/90 transition cursor-pointer"
             >
@@ -149,9 +150,9 @@ function EventCell({ event }: { event: CalendarEvent }) {
 }
 
 export default function EventosCalendario() {
-  const [eventosApi, setEventosApi] = useState<EventoModel[]>([]);
+  const [eventosApi, setEventosApi] = useState<Evento[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
-  const [selectedEvento, setSelectedEvento] = useState<EventoModel | null>(null);
+  const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState(Views.MONTH);
@@ -159,13 +160,13 @@ export default function EventosCalendario() {
   const obtenerEventos = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await http.get<EventoModel[]>(
-        `${EventoModel.ENDPOINTS.DEFAULT}?expand=${EventoModel.EXPAND.DEFAULT}`
+      const response = await http.get<Evento[]>(
+        `${Evento.ENDPOINTS.DEFAULT}?expand=${Evento.EXPAND.DEFAULT}`
       );
       if (response.status === 200 && Array.isArray(response.resultado)) {
         setEventosApi(response.resultado);
 
-        const mapped: CalendarEvent[] = response.resultado
+        const mapped = response.resultado
           .filter((e) => e.fechaInicio)
           .map((e) => ({
             id: e.id,
@@ -247,7 +248,7 @@ export default function EventosCalendario() {
             event: EventCell,
           }}
           eventPropGetter={(event) => {
-            const e = event.resource as EventoModel;
+            const e = event.resource as Evento;
             const esLimitado =
               e.capacidadMaxima != null &&
               e.capacidadMaxima > 0 &&

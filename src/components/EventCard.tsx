@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import { API_URL } from "@/hooks/http";
 import { Evento as EventoModel } from "@/models/Evento.model";
+import { API_URL } from "@/constants";
 
 function formatDateLabel(fechaInicio?: string, fechaFin?: string): string {
   if (!fechaInicio) return "";

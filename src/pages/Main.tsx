@@ -73,6 +73,8 @@ const EventosPage: React.FC = () => {
     setPagina(1);
   }, [unidadAcademica, categoria, actividad, fecha]);
 
+  console.log(eventos);
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
       <div className="mb-12">

@@ -1,8 +1,13 @@
+/// <reference path="../.astro/types.d.ts" />
+
 interface ImportMetaEnv {
-  readonly SUPABASE_URL: string
-  readonly SUPABASE_ANON_KEY: string
+  readonly PUBLIC_API_URL: string;
+  readonly PUBLIC_IS_DEV: string;
+  readonly PUBLIC_SHOW_DEVTOOLS: string;
+  readonly PUBLIC_VERSION: string;
+  readonly PUBLIC_PROJECT_NAME: string;
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv
+  readonly env: ImportMetaEnv;
 }
