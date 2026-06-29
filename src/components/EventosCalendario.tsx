@@ -207,9 +207,13 @@ export default function EventosCalendario() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
       <div className="mb-10">
-        <h1 className="text-4xl font-extrabold mb-2">Calendario de Eventos</h1>
-        <p className="text-gray-500">
-          Visualiza y explora todos los eventos del mes.
+        <h1 className="text-4xl font-extrabold mb-2">
+          Calendario de <span className="text-primary">Eventos</span>
+        </h1>
+        <p className="text-text-muted max-w-2xl">
+          Planifica tu mes y no te pierdas ninguna conferencia, taller o actividad
+          de la Universidad Estatal de Sonora. Haz clic en cualquier evento para ver
+          sus detalles.
         </p>
       </div>
 
@@ -256,12 +260,14 @@ export default function EventosCalendario() {
             return {
               style: {
                 backgroundColor: esLimitado
-                  ? "rgba(249, 115, 22, 0.1)"
-                  : "rgba(var(--color-primary-rgb, 79 70 229) / 0.08)",
-                color: esLimitado ? "#c2410c" : "var(--color-primary, #4f46e5)",
+                  ? "rgba(249, 115, 22, 0.12)"
+                  : "color-mix(in oklch, var(--color-primary) 12%, transparent)",
+                color: esLimitado ? "#c2410c" : "var(--color-primary)",
                 border: "none",
+                borderLeft: `3px solid ${esLimitado ? "#f97316" : "var(--color-primary)"}`,
                 borderRadius: "6px",
                 fontSize: "12px",
+                fontWeight: 600,
                 cursor: "pointer",
               },
             };
@@ -273,7 +279,7 @@ export default function EventosCalendario() {
               date.getMonth() === today.getMonth() &&
               date.getFullYear() === today.getFullYear();
             return isToday
-              ? { style: { backgroundColor: "rgba(var(--color-primary-rgb, 79 70 229) / 0.04)" } }
+              ? { style: { backgroundColor: "color-mix(in oklch, var(--color-primary) 6%, transparent)" } }
               : {};
           }}
           popup
@@ -294,6 +300,7 @@ export default function EventosCalendario() {
           font-size: 1.125rem;
           font-weight: 700;
           text-transform: capitalize;
+          color: var(--color-primary);
         }
         .rbc-btn-group button {
           font-size: 0.875rem;
@@ -303,11 +310,13 @@ export default function EventosCalendario() {
           cursor: pointer;
         }
         .rbc-btn-group button:hover {
-          background: #f9fafb;
+          background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+          color: var(--color-primary);
         }
         .rbc-btn-group button.rbc-active {
-          background: #f3f4f6 !important;
-          color: #111827 !important;
+          background: color-mix(in oklch, var(--color-primary) 14%, transparent) !important;
+          color: var(--color-primary) !important;
+          border-color: color-mix(in oklch, var(--color-primary) 30%, transparent) !important;
           font-weight: 600;
         }
         .rbc-header {
@@ -316,7 +325,8 @@ export default function EventosCalendario() {
           font-size: 0.75rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: #9ca3af;
+          color: var(--color-primary);
+          background: color-mix(in oklch, var(--color-primary) 4%, transparent);
           border-color: #f0f0f0 !important;
         }
         .rbc-month-view,

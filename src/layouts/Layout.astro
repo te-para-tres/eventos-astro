@@ -58,28 +58,21 @@ const socialTitle = ogTitle ?? pageTitle;
     <title>{pageTitle}</title>
     <ClientRouter />
   </head>
-  <body>
-    <Navbar title={title} />
-    <main class="bg-stone-50/60">
-      <Toaster client:only="react" />
-      <slot />
-    </main>
-    <footer>
-      <Footer />
-    </footer>
+  <body class="bg-stone-100">
+    <div class="min-h-screen p-4 flex flex-col">
+      <Navbar title={title} />
+      <main
+        class="flex-1 relative z-0 -mt-5 rounded-2xl bg-white overflow-hidden shadow-sm"
+      >
+        <Toaster client:only="react" />
+        <slot />
+      </main>
+      <div class="mt-4">
+        <Footer />
+      </div>
+    </div>
 
     <style is:global>
-      :root {
-        --accent: 136, 58, 234;
-        --accent-light: 224, 204, 250;
-        --accent-dark: 49, 10, 101;
-        --accent-gradient: linear-gradient(
-          45deg,
-          rgb(var(--accent)),
-          rgb(var(--accent-light)) 30%,
-          white 60%
-        );
-      }
       html {
         font-family: system-ui, sans-serif;
         scroll-behavior: smooth;

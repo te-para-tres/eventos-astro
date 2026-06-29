@@ -1,71 +1,132 @@
 ---
-import { CircleHelp, LogIn, School } from "lucide-react";
+import { School, LogIn, Menu } from "lucide-react";
 
 interface Props {
   title: string;
 }
-const { title } = Astro.props;
+
+const items = [
+  { label: "Inicio", href: "/" },
+  { label: "Eventos", href: "/eventos" },
+  { label: "Departamentos", href: "/departamentos" },
+  { label: "Contacto", href: "#contacto" },
+];
+
+const path = Astro.url.pathname;
+const activo = (href: string) =>
+  href !== "#contacto" &&
+  (href === "/" ? path === "/" : path.startsWith(href));
 ---
 
-<div
-  class="h-0.75 w-full bg-[linear-gradient(90deg,var(--color-primary)_0%,var(--color-primary-hover)_35%,#c4445f_50%,var(--color-primary-hover)_65%,var(--color-primary)_100%)] bg-size-[250%_auto] animate-[shimmer_5s_linear_infinite]"
->
-</div>
-
-<header
-  class="sticky top-0 z-50 bg-white/88 backdrop-blur-2xl border-b border-border-custom"
->
+<header class="sticky top-0 z-50">
   <div
-    class="max-w-7xl w-full mx-auto px-6 h-16.5 flex justify-between items-center"
+    class="max-w-4xl mx-auto bg-stone-100 rounded-2xl rounded-t-none h-16 flex items-stretch"
   >
-    <div class="flex items-center gap-5">
-      <a href="/" class="group flex items-center gap-3 no-underline">
-        <div
-          class="bg-primary rounded-lg p-[0.42rem] flex items-center justify-center text-white transition-all duration-180 group-hover:bg-primary-hover group-hover:shadow-[0_4px_12px_rgba(123,22,62,0.28)]"
-        >
-          <School className="w-[1.15rem] h-[1.15rem]" aria-hidden="true" />
-        </div>
-        <div class="flex flex-col">
-          <span
-            class="text-[1.28rem] font-black tracking-tight text-primary leading-none"
-          >
-            UES
-          </span>
-          <span
-            class="text-[8.5px] font-semibold text-text-muted uppercase tracking-[0.13em] leading-none mt-0.75"
-          >
-            Universidad Estatal <br /> de Sonora
-          </span>
-        </div>
-      </a>
-
-      {
-        title && (
-          <div class="hidden md:flex items-center pl-5 border-l border-border-custom">
-            <p class="text-[0.88rem] font-medium text-text-muted">{title}</p>
-          </div>
-        )
-      }
-    </div>
-
-    <nav class="flex items-center gap-1">
-      <a
-        href="/soporte"
-        class="relative flex items-center gap-1.5 px-3 py-[0.45rem] text-[0.82rem] font-medium text-text-muted transition-colors duration-200 hover:text-text-main after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[1.5px] after:bg-primary after:rounded-sm after:[transition:width_0.22s_ease,left_0.22s_ease] hover:after:w-full hover:after:left-0"
+    <a
+      href="/"
+      class="group flex items-center gap-2.5 px-5 no-underline shrink-0 rounded-l-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    >
+      <span
+        class="bg-primary rounded-lg p-[0.42rem] flex items-center justify-center text-white transition-colors duration-180 group-hover:bg-primary-hover"
       >
-        <CircleHelp className="w-[0.8rem] h-[0.8rem]" aria-hidden="true" />
-        <span>Soporte</span>
-      </a>
+        <School className="w-[1.15rem] h-[1.15rem]" aria-hidden="true" />
+      </span>
+      <span class="font-bold tracking-tight text-primary text-lg whitespace-nowrap">
+        Eventues
+      </span>
+    </a>
 
-      <span class="w-px h-4 bg-border-custom mx-1.5 block"></span>
+    <span class="hidden md:block self-center w-px h-8 bg-border-custom" aria-hidden="true"></span>
 
+    <nav
+      class="hidden md:flex flex-1 items-center justify-center px-4"
+      aria-label="Navegación principal"
+    >
+      <div class="flex items-center gap-1 bg-white rounded-xl p-2">
+        {
+          items.map((item) => (
+            <a
+              href={item.href}
+              aria-current={activo(item.href) ? "page" : undefined}
+              class:list={[
+                "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                activo(item.href)
+                  ? "bg-primary/10 text-primary"
+                  : "text-text-muted hover:text-primary",
+              ]}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+
+    <span class="hidden md:block self-center w-px h-8 bg-border-custom" aria-hidden="true"></span>
+
+    <div class="flex items-center gap-2 pl-4 pr-4 ml-auto">
       <a
         href="/iniciar-sesion"
-        class="flex items-center gap-2 bg-primary px-4 py-[0.48rem] rounded-lg text-white text-[0.82rem] font-semibold transition-all duration-200 hover:bg-primary-hover hover:shadow-[0_4px_14px_rgba(123,22,62,0.3)] hover:-translate-y-px active:translate-y-0 active:shadow-none"
+        class="flex items-center gap-2 bg-primary text-white rounded-lg px-4 py-2 text-sm font-semibold transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
-        <LogIn className="w-[0.78rem] h-[0.78rem]" aria-hidden="true" />
-        <span>Iniciar sesión</span>
+        <LogIn className="w-4 h-4" aria-hidden="true" />
+        <span class="hidden sm:inline">Iniciar sesión</span>
       </a>
+
+      <button
+        id="navbar-toggle"
+        type="button"
+        class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-text-muted transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        aria-label="Abrir menú de navegación"
+        aria-expanded="false"
+        aria-controls="navbar-mobile-panel"
+      >
+        <Menu className="w-5 h-5" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="navbar-mobile-panel"
+    class="hidden md:hidden max-w-7xl mx-auto mt-2 bg-white rounded-2xl shadow-md border border-border-custom p-2"
+  >
+    <nav class="flex flex-col gap-1" aria-label="Navegación móvil">
+      {
+        items.map((item) => (
+          <a
+            href={item.href}
+            aria-current={activo(item.href) ? "page" : undefined}
+            class:list={[
+              "px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+              activo(item.href)
+                ? "bg-primary/10 text-primary"
+                : "text-text-muted hover:bg-primary/10 hover:text-primary",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
     </nav>
   </div>
 </header>
+
+<script>
+  function setupNavbar() {
+    const toggle = document.getElementById("navbar-toggle");
+    const panel = document.getElementById("navbar-mobile-panel");
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener("click", () => {
+      const open = panel.classList.toggle("hidden") === false;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute(
+        "aria-label",
+        open ? "Cerrar menú de navegación" : "Abrir menú de navegación"
+      );
+    });
+  }
+
+  setupNavbar();
+  document.addEventListener("astro:after-swap", setupNavbar);
+</script>

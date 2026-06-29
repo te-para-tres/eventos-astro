@@ -1,152 +1,76 @@
 ---
-import { Mail, School, Share2 } from "lucide-react";
+import { Home, CalendarDays, Building2, Mail } from "lucide-react";
+
+const links = [
+  { label: "Inicio", href: "/", Icon: Home },
+  { label: "Eventos", href: "/eventos", Icon: CalendarDays },
+  { label: "Departamentos", href: "/departamentos", Icon: Building2 },
+  { label: "Contacto", href: "#contacto", Icon: Mail },
+];
+const palabras = ["Eventues", "Eventues", "Eventues", "Eventues"];
 ---
 
-<footer class="w-full mt-24 bg-bg-alt border-t border-border-custom pt-16 pb-8">
-  <div class="mx-auto max-w-7xl px-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-16 mb-16">
-      <div class="lg:col-span-2">
-        <div class="flex items-center gap-3 mb-6">
-          <div
-            class="bg-primary text-white p-1.5 rounded flex items-center justify-center"
+<footer
+  id="contacto"
+  class="rounded-2xl bg-primary text-white overflow-hidden"
+>
+  <p class="text-center text-white/80 text-sm pt-10 px-6">
+    © 2026 UES Eventos. Todos los derechos reservados.
+  </p>
+
+  <div
+    class="relative w-full overflow-hidden select-none pointer-events-none my-6"
+    aria-hidden="true"
+  >
+    <div class="flex w-max marquee-track">
+      {
+        [...palabras, ...palabras].map((palabra) => (
+          <span
+            class="mx-8 text-[18vw] md:text-[12vw] font-black leading-none text-white/15"
           >
-            <School className="w-6 h-6" aria-hidden="true" />
-          </div>
-          <span class="text-xl font-bold text-primary">UES</span>
-        </div>
-        <p class="text-sm text-text-muted leading-relaxed max-w-xs">
-          La plataforma oficial de descubrimiento de eventos para nuestra
-          comunidad de la Universidad Estatal de Sonora.
-        </p>
-      </div>
-
-      <div class="flex flex-col gap-6">
-        <h4 class="text-xs font-bold uppercase tracking-widest text-text-main">
-          Universidad
-        </h4>
-        <ul class="list-none p-0 m-0 flex flex-col gap-3">
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Sitio Web Principal
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Mapa del Campus
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://escolares.ues.mx/login.aspx" target="_blank"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Portal de Alumnos
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="flex flex-col gap-6">
-        <h4 class="text-xs font-bold uppercase tracking-widest text-text-main">
-          Legal
-        </h4>
-        <ul class="list-none p-0 m-0 flex flex-col gap-3">
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Aviso de Privacidad
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Términos de Servicio
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Accesibilidad
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="flex flex-col gap-6">
-        <h4 class="text-xs font-bold uppercase tracking-widest text-text-main">
-          Soporte
-        </h4>
-        <ul class="list-none p-0 m-0 flex flex-col gap-3">
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Centro de Ayuda
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Contacto Académico
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-sm text-text-muted no-underline transition-colors duration-200 hover:text-primary"
-            >
-              Soporte Técnico
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div
-      class="pt-8 border-t border-primary flex flex-col md:flex-row justify-between items-center gap-8"
-    >
-      <p class="text-xs text-text-muted font-medium">
-        © 2026 Universidad Estatal de Sonora - Tablero de Eventos. Todos los
-        derechos reservados.
-      </p>
-      <div class="flex gap-6">
-        <a
-          href="https://www.facebook.com"
-          target="_blank"
-          class="text-primary hover:text-primary-hover transition-colors duration-200"
-        >
-          <i class="fa-brands fa-facebook-f text-xl"></i>
-        </a>
-
-        <a
-          href="mailto:correo@ejemplo.com"
-          class="text-primary hover:text-primary-hover transition-colors duration-200"
-        >
-          <Mail className="w-5 h-5" aria-hidden="true" />
-        </a>
-
-        <a
-          href="#"
-          class="text-primary hover:text-primary-hover transition-colors duration-200"
-        >
-          <Share2 className="w-5 h-5" aria-hidden="true" />
-        </a>
-      </div>
+            {palabra}
+          </span>
+        ))
+      }
     </div>
   </div>
+
+  <nav
+    class="grid grid-cols-2 md:grid-cols-4 border-t border-white/20"
+    aria-label="Enlaces del pie de página"
+  >
+    {
+      links.map(({ label, href, Icon }) => (
+        <a
+          href={href}
+          class="group flex items-center justify-center border-r border-white/20 last:border-r-0 px-3 py-5 text-white transition-colors duration-300 hover:bg-white hover:text-primary focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
+        >
+          <Icon className="w-5 h-5 shrink-0" aria-hidden="true" />
+          <span class="max-w-0 -translate-x-2 overflow-hidden whitespace-nowrap text-sm font-medium opacity-0 transition-all duration-300 group-hover:ml-2 group-hover:max-w-[140px] group-hover:translate-x-0 group-hover:opacity-100">
+            {label}
+          </span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <style>
+    @keyframes footer-marquee {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+    .marquee-track {
+      animation: footer-marquee 30s linear infinite;
+      will-change: transform;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track {
+        animation: none;
+      }
+    }
+  </style>
 </footer>

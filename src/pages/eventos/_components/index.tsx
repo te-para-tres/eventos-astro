@@ -1,16 +1,16 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { http } from "../hooks/http";
-import { Evento } from "../models/Evento.model";
-import { UnidadAcademica } from "../models/UnidadAcademica.model";
-import { CategoriaEvento } from "../models/CategoriaEvento.model";
-import { Actividad } from "../models/Actividad.model";
+import { http } from "@/hooks/http";
+import { Evento } from "@/models/Evento.model";
+import { UnidadAcademica } from "@/models/UnidadAcademica.model";
+import { CategoriaEvento } from "@/models/CategoriaEvento.model";
+import { Actividad } from "@/models/Actividad.model";
 import QuerySelector from "@/components/QuerySelector";
 import EventCard from "@/components/EventCard";
 import DatePicker from "@/components/DatePicker";
 import Paginacion from "@/components/Paginacion";
 import EventosCalendario from "@/components/EventosCalendario";
 import { Spinner } from "@/components/ui/spinner";
-import { CalendarX, FilterX } from "lucide-react";
+import { CalendarX, Paintbrush } from "lucide-react";
 
 
 interface Paginacion {
@@ -19,7 +19,7 @@ interface Paginacion {
   limite: number,
 }
 
-const EventosPage: React.FC = () => {
+const EventosView: React.FC = () => {
   const [unidadAcademica, setUnidadAcademica] = useState("");
   const [categoria, setCategoria] = useState("");
   const [actividad, setActividad] = useState("");
@@ -78,16 +78,20 @@ const EventosPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
       <div className="mb-12">
-        <h1 className="text-4xl font-extrabold mb-4">Próximos Eventos</h1>
-        <p className="text-gray-600 max-w-2xl">
-          Explora y únete a las actividades y eventos más recientes.
+        <h1 className="text-4xl font-extrabold mb-4">
+          Eventos de la <span className="text-primary">Universidad</span>
+        </h1>
+        <p className="text-text-muted max-w-2xl">
+          Conferencias, talleres, actividades culturales y deportivas de todos los
+          campus y departamentos de la Universidad Estatal de Sonora. Filtra por
+          unidad académica, categoría o fecha y descubre a qué unirte esta semana.
         </p>
       </div>
 
-      <section className="bg-white p-6 mb-12">
+      <section className="w-full bg-bg-card border border-border-custom rounded-xl p-6 mb-12">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-end">
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <label className="text-xs font-semibold capitalize text-primary">
               Campus
             </label>
             <QuerySelector<UnidadAcademica>
@@ -99,7 +103,7 @@ const EventosPage: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <label className="text-xs font-semibold capitalize text-primary">
               Categoría
             </label>
             <QuerySelector<CategoriaEvento>
@@ -111,7 +115,7 @@ const EventosPage: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <label className="text-xs font-semibold capitalize text-primary">
               Actividad
             </label>
             <QuerySelector<Actividad>
@@ -128,9 +132,9 @@ const EventosPage: React.FC = () => {
             <button
               onClick={limpiar}
               aria-label="Limpiar filtros"
-              className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center gap-1.5 cursor-pointer"
+              className="group h-9 px-3 text-sm rounded-lg bg-primary hover:bg-primary-hover flex items-center gap-1.5 cursor-pointer transition-colors"
             >
-              <FilterX className="w-3.5 h-3.5" aria-hidden="true" />
+              <Paintbrush className="w-4 h-4 text-text-light/80 group-hover:text-text-light transition-colors" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -167,4 +171,4 @@ const EventosPage: React.FC = () => {
   );
 }
 
-export default EventosPage;
+export default EventosView;

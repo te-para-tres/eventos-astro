@@ -42,13 +42,14 @@ const Paginacion: React.FC<Props> = ({ pagina, total, limite, onPageChange, etiq
   };
 
   return (
-    <div className="mt-12 flex flex-col items-center gap-3">
-      <Pagination>
+    <div className="mt-12 flex flex-col items-end gap-3">
+      <Pagination className="mx-0 justify-end">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
+              text="Anterior"
               onClick={() => pagina > 1 && irAPagina(pagina - 1)}
-              className={pagina === 1 ? "pointer-events-none opacity-40" : "cursor-pointer"}
+              className={pagina === 1 ? "pointer-events-none opacity-40" : "cursor-pointer text-primary hover:text-primary"}
             />
           </PaginationItem>
 
@@ -62,7 +63,7 @@ const Paginacion: React.FC<Props> = ({ pagina, total, limite, onPageChange, etiq
                 <PaginationLink
                   isActive={p === pagina}
                   onClick={() => irAPagina(p)}
-                  className="cursor-pointer"
+                  className={p === pagina ? "cursor-pointer border-primary text-primary" : "cursor-pointer"}
                 >
                   {p}
                 </PaginationLink>
@@ -72,8 +73,9 @@ const Paginacion: React.FC<Props> = ({ pagina, total, limite, onPageChange, etiq
 
           <PaginationItem>
             <PaginationNext
+              text="Siguiente"
               onClick={() => pagina < totalPaginas && irAPagina(pagina + 1)}
-              className={pagina === totalPaginas ? "pointer-events-none opacity-40" : "cursor-pointer"}
+              className={pagina === totalPaginas ? "pointer-events-none opacity-40" : "cursor-pointer text-primary hover:text-primary"}
             />
           </PaginationItem>
         </PaginationContent>

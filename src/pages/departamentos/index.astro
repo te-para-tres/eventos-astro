@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import type { Carrera } from "@/models/Carrera.model";
 import { getCarreras } from "@/services/carreras";
 import { Card } from "@/components/ui/card";
@@ -17,6 +18,10 @@ const carreras = await getCarreras({
   description="Explora los departamentos y unidades académicas de la Universidad Estatal de Sonora y sus eventos."
 >
   <div class="max-w-7xl mx-auto px-6 py-16">
+    <Breadcrumbs
+      items={[{ label: "Inicio", href: "/" }, { label: "Departamentos" }]}
+      className="mb-6"
+    />
     <h1 class="text-4xl font-extrabold mb-10">Departamentos</h1>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {

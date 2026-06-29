@@ -1,11 +1,11 @@
 ---
-import Main from "./Main.tsx";
 import Layout from "../layouts/Layout.astro";
+import IndexView from "./_index";
 ---
 
 <Layout
-	title="Inicio"
-	description="Descubre e inscríbete a los próximos eventos públicos de la Universidad Estatal de Sonora."
+  title="Inicio"
+  description="Descubre e inscríbete a los próximos eventos públicos de la Universidad Estatal de Sonora."
 >
-	<Main client:only="react" />
+  <IndexView client:only="react" />
 </Layout>

@@ -2,6 +2,7 @@
 import { getEventos } from "@/services/eventos";
 import Layout from "../../layouts/Layout.astro";
 import { Evento } from "@/models/Evento.model";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,7 +44,10 @@ const eventos = await getEventos({
 
 const evento = eventos[0];
 
-const eventosPool = await getEventos({ expand: Evento.EXPAND.DEFAULT, limite: 6 });
+const eventosPool = await getEventos({
+  expand: Evento.EXPAND.DEFAULT,
+  limite: 6,
+});
 
 function getEventosRelacionados(lista: Evento[], actual?: Evento): Evento[] {
   if (!actual) return [];
@@ -72,13 +76,15 @@ const ubicacion = evento?.lugar
 
 const capacidad = evento?.capacidadMaxima ?? 0;
 const inscritos = evento?.asistentes?.length ?? 0;
-const porcentaje = capacidad > 0 ? Math.min(100, Math.round((inscritos / capacidad) * 100)) : 0;
+const porcentaje =
+  capacidad > 0 ? Math.min(100, Math.round((inscritos / capacidad) * 100)) : 0;
 const lleno = capacidad > 0 && inscritos >= capacidad;
 ---
 
 <Layout
   title={evento?.nombre ?? "Evento"}
-  description={evento?.descripcion ?? "Evento de la Universidad Estatal de Sonora."}
+  description={evento?.descripcion ??
+    "Evento de la Universidad Estatal de Sonora."}
   ogImage={imagenSrc}
 >
   {
@@ -88,7 +94,15 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
         <p class="text-sm">No se encontró el evento.</p>
       </div>
     ) : (
-      <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-4 max-w-7xl mx-auto">
+      <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
+        <Breadcrumbs
+          items={[
+            { label: "Inicio", href: "/" },
+            { label: "Eventos", href: "/eventos" },
+            { label: evento?.nombre ?? "Evento" },
+          ]}
+          className="mb-6"
+        />
         <div class="page-enter">
           <section class="flex flex-col xl:grid xl:grid-cols-12 gap-6 lg:gap-8">
             <div class="xl:col-span-8 space-y-5 sm:space-y-6">
@@ -129,31 +143,31 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                {
-                  [
-                    {
-                      icon: Utensils,
-                      title: "CATERING INCLUIDO",
-                      desc: "Café y alimentos incluidos.",
-                    },
-                    {
-                      icon: FileText,
-                      title: "CONSTANCIA DE ASISTENCIA",
-                      desc: "Se emitirán certificados digitales a los participantes para sus portafolios profesionales.",
-                    },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <div class="p-3 sm:p-4 border-l-4 border-yellow-400 bg-gray-50 rounded-lg transition hover:-translate-y-0.5 hover:shadow-lg">
-                        <p class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm md:text-base">
-                          <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                          {item.title}
-                        </p>
-                        <p class="text-xs sm:text-sm text-gray-500 mt-1">{item.desc}</p>
-                      </div>
-                    );
-                  })
-                }
+                {[
+                  {
+                    icon: Utensils,
+                    title: "CATERING INCLUIDO",
+                    desc: "Café y alimentos incluidos.",
+                  },
+                  {
+                    icon: FileText,
+                    title: "CONSTANCIA DE ASISTENCIA",
+                    desc: "Se emitirán certificados digitales a los participantes para sus portafolios profesionales.",
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div class="p-3 sm:p-4 border-l-4 border-yellow-400 bg-gray-50 rounded-lg transition hover:-translate-y-0.5 hover:shadow-lg">
+                      <p class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm md:text-base">
+                        <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        {item.title}
+                      </p>
+                      <p class="text-xs sm:text-sm text-gray-500 mt-1">
+                        {item.desc}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -162,12 +176,15 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
                 id="inscripcion"
                 data-capacidad={capacidad}
                 data-confirmados={inscritos}
-                className="p-4 sm:p-5 md:p-6 gap-4 border-t-4 border-primary ring-0 shadow-md"
+                className="p-4 sm:p-5 md:p-6 gap-4 border-t-4 border-primary rounded-lg ring-0 shadow-md"
               >
                 <div class="flex justify-between items-center text-[10px] sm:text-xs text-primary font-medium">
                   <span>ESTUDIANTES INSCRITOS</span>
                   <span class="text-xs sm:text-sm">
-                    <b id="contador" class="text-primary">{inscritos}</b> / {capacidad}
+                    <b id="contador" class="text-primary">
+                      {inscritos}
+                    </b>{" "}
+                    / {capacidad}
                   </span>
                 </div>
 
@@ -196,7 +213,10 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </a>
 
-                <div id="bloque-confirmado" class="hidden confirmed-enter space-y-2">
+                <div
+                  id="bloque-confirmado"
+                  class="hidden confirmed-enter space-y-2"
+                >
                   <div class="w-full py-2.5 sm:py-3 rounded-lg font-semibold flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base bg-green-700 text-white">
                     INSCRIPCIÓN CONFIRMADA
                     <Check className="w-4 h-4" aria-hidden="true" />
@@ -211,68 +231,75 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
                 </div>
               </Card>
 
-              {
-                evento.unidadAcademica && (
-                  <a href={`/departamentos/${evento?.carrera?.id}`} class="block mb-4">
-                    <Card className="p-4 sm:p-5 gap-4 border ring-0 shadow-sm cursor-pointer transition duration-300 hover:border hover:border-primary hover:-translate-y-0.5 hover:shadow-lg">
-                      <p class="text-[10px] sm:text-xs text-primary font-medium">ORGANIZADO POR</p>
-                      <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center text-white shrink-0">
-                          <Building2 className="w-4 h-4" aria-hidden="true" />
-                        </div>
-                        <div>
-                          <span class="font-semibold text-xs sm:text-sm">
-                            {evento.unidadAcademica.nombre}
-                          </span>
-                          {evento.carrera && (
-                            <p class="text-[10px] sm:text-xs text-gray-500">
-                              {evento.carrera.nombre}
-                            </p>
-                          )}
-                        </div>
+              {evento.unidadAcademica && (
+                <a
+                  href={`/departamentos/${evento?.carrera?.id}`}
+                  class="block mb-4"
+                >
+                  <Card className="p-4 sm:p-5 gap-4 border ring-0 shadow-sm cursor-pointer rounded-lg transition duration-300 hover:border hover:border-primary hover:shadow-md">
+                    <p class="text-[10px] sm:text-xs text-primary font-medium">
+                      ORGANIZADO POR
+                    </p>
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center text-white shrink-0">
+                        <Building2 className="w-4 h-4" aria-hidden="true" />
                       </div>
-                    </Card>
-                  </a>
-                )
-              }
-
-              {
-                eventosRelacionados.length > 0 && (
-                  <div class="space-y-3">
-                    <p class="text-[10px] sm:text-xs text-primary font-semibold pt-4">EVENTOS RELACIONADOS</p>
-                    <div class="flex flex-col gap-3">
-                      {eventosRelacionados.map((ev) => (
-                        <a
-                          href={`/eventos/${ev?.id}`}
-                          class="flex items-center gap-3 p-2.5 rounded-lg border hover:border-primary hover:shadow-sm transition cursor-pointer group"
-                        >
-                          <div class="rounded-lg flex items-center justify-center shrink-0">
-                            <img
-                              src={`${URL_RECURSOS}/${ev?.imagenDestacada?.ruta}`}
-                              alt={ev?.nombre}
-                              class="size-10 object-cover rounded"
-                            />
-                          </div>
-                          <div class="min-w-0">
-                            <p class="text-xs text-stone-500">
-                              {ev?.fechaInicio
-                                ? dayjs(ev?.fechaInicio).locale("es").format("D MMM")
-                                : "—"}{" "}
-                              -{" "}
-                              {ev?.fechaFin
-                                ? dayjs(ev?.fechaFin).locale("es").format("D MMM YYYY")
-                                : "—"}
-                            </p>
-                            <p class="text-sm font-medium leading-snug truncate group-hover:text-primary transition">
-                              {ev?.nombre ?? ""}
-                            </p>
-                          </div>
-                        </a>
-                      ))}
+                      <div>
+                        <span class="font-semibold text-xs sm:text-sm">
+                          {evento.unidadAcademica.nombre}
+                        </span>
+                        {evento.carrera && (
+                          <p class="text-[10px] sm:text-xs text-gray-500">
+                            {evento.carrera.nombre}
+                          </p>
+                        )}
+                      </div>
                     </div>
+                  </Card>
+                </a>
+              )}
+
+              {eventosRelacionados.length > 0 && (
+                <Card className="p-4 sm:p-5 gap-4 border ring-0 shadow-sm cursor-pointer rounded-lg">
+                  <p class="text-[10px] sm:text-xs text-primary font-semibold">
+                    EVENTOS RELACIONADOS
+                  </p>
+                  <div class="flex flex-col gap-3">
+                    {eventosRelacionados.map((ev) => (
+                      <a
+                        href={`/eventos/${ev?.id}`}
+                        class="flex items-center gap-3 p-2.5 rounded-lg border hover:border-primary hover:shadow-sm transition cursor-pointer group"
+                      >
+                        <div class="rounded-lg flex items-center justify-center shrink-0">
+                          <img
+                            src={`${URL_RECURSOS}/${ev?.imagenDestacada?.ruta}`}
+                            alt={ev?.nombre}
+                            class="size-10 object-cover rounded"
+                          />
+                        </div>
+                        <div class="min-w-0">
+                          <p class="text-xs text-stone-500">
+                            {ev?.fechaInicio
+                              ? dayjs(ev?.fechaInicio)
+                                  .locale("es")
+                                  .format("D MMM")
+                              : "—"}{" "}
+                            -{" "}
+                            {ev?.fechaFin
+                              ? dayjs(ev?.fechaFin)
+                                  .locale("es")
+                                  .format("D MMM YYYY")
+                              : "—"}
+                          </p>
+                          <p class="text-sm font-medium leading-snug truncate group-hover:text-primary transition">
+                            {ev?.nombre ?? ""}
+                          </p>
+                        </div>
+                      </a>
+                    ))}
                   </div>
-                )
-              }
+                </Card>
+              )}
             </div>
           </section>
         </div>
@@ -287,7 +314,9 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
           </div>
           <div>
             <p class="leading-tight">¡Inscripción confirmada!</p>
-            <p class="text-xs text-green-100 font-normal">Te esperamos pronto</p>
+            <p class="text-xs text-green-100 font-normal">
+              Te esperamos pronto
+            </p>
           </div>
         </div>
 
@@ -301,7 +330,9 @@ const lleno = capacidad > 0 && inscritos >= capacidad;
           </div>
           <div>
             <p class="leading-tight">Inscripción cancelada</p>
-            <p class="text-xs text-red-100 font-normal">Puedes volver a inscribirte cuando quieras</p>
+            <p class="text-xs text-red-100 font-normal">
+              Puedes volver a inscribirte cuando quieras
+            </p>
           </div>
         </div>
       </main>
