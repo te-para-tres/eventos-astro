@@ -54,7 +54,7 @@ function CountUp({ target }: { target: number }) {
 
 const IndexView: React.FC = () => {
   return (
-    <main className="overflow-x-hidden">
+    <div>
       <section className="max-w-7xl mx-auto px-6 pt-24 pb-16 text-center">
         <motion.div
           initial="hidden"
@@ -248,7 +248,7 @@ const IndexView: React.FC = () => {
           <ArrowRight className="size-5" />
         </a>
       </motion.section>
-    </main>
+    </div>
   );
 };
 
