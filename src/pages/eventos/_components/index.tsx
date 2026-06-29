@@ -32,6 +32,7 @@ const EventosView: React.FC = () => {
 
   const parametros = useMemo(() => ({
     idCategoria: categoria,
+    estado: "activo",
     idUnidadAcademica: unidadAcademica,
     idActividad: actividad,
     fecha,
