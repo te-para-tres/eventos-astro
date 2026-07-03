@@ -31,7 +31,7 @@
     flex: 1;
     transform: scaleX(0);
     transform-origin: left center;
-    transition: transform 320ms cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform 550ms cubic-bezier(0.65, 0, 0.35, 1);
     will-change: transform, border-radius;
   }
 
@@ -45,8 +45,8 @@
     border-top-left-radius: 90px;
     border-bottom-left-radius: 90px;
     transition:
-      transform 480ms cubic-bezier(0.55, 0.05, 0.35, 0.95),
-      border-radius 480ms cubic-bezier(0.55, 0.05, 0.35, 0.95);
+      transform 700ms cubic-bezier(0.55, 0.05, 0.35, 0.95),
+      border-radius 700ms cubic-bezier(0.55, 0.05, 0.35, 0.95);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -57,25 +57,30 @@
 </style>
 
 <script>
+  import { navigate } from "astro:transitions/client";
+
   (() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if ((window as any).__pageTransitionOverlayLoaded) return;
+    (window as any).__pageTransitionOverlayLoaded = true;
 
     const STATE_IDLE = "idle";
     const STATE_COVERING = "covering";
     const STATE_COVERED = "covered";
     const STATE_REVEALING = "revealing";
 
-    const PHASE1_STAGGER = 35;
-    const PHASE1_DURATION = 320;
-    const PHASE2_STAGGER = 38;
-    const PHASE2_DURATION = 480;
+    const PHASE1_STAGGER = 50;
+    const PHASE1_DURATION = 550;
+    const PHASE2_STAGGER = 60;
+    const PHASE2_DURATION = 700;
 
-    let state = STATE_IDLE;
-    let phase1Timers: any = [];
-    let phase2Timers: any = [];
+    let state: string = STATE_IDLE;
+    let phase1Timers: any[] = [];
+    let phase2Timers: any[] = [];
     let cleanupTimer: any = null;
+    let pendingNav: { href: string; history: "auto" | "replace" } | null = null;
 
-    function getBars() {
+    function getBars(): HTMLElement[] {
       const overlay = document.getElementById("page-transition-overlay");
       if (!overlay) return [];
       return Array.from(overlay.querySelectorAll(".page-transition-bar"));
@@ -101,7 +106,15 @@
       state = STATE_IDLE;
     }
 
+    function firePendingNav() {
+      if (!pendingNav) return;
+      const nav = pendingNav;
+      pendingNav = null;
+      navigate(nav.href, { history: nav.history });
+    }
+
     function startPhase1() {
+      if (state === STATE_COVERED) return;
       if (state !== STATE_IDLE) reset();
 
       const bars = getBars();
@@ -116,7 +129,10 @@
       });
 
       const doneT = setTimeout(() => {
-        if (state === STATE_COVERING) state = STATE_COVERED;
+        if (state === STATE_COVERING) {
+          state = STATE_COVERED;
+          firePendingNav();
+        }
       }, (bars.length - 1) * PHASE1_STAGGER + PHASE1_DURATION);
       phase1Timers.push(doneT);
     }
@@ -140,11 +156,64 @@
         () => {
           reset();
         },
-        (bars.length - 1) * PHASE2_STAGGER + PHASE2_DURATION + 60,
+        (bars.length - 1) * PHASE2_STAGGER + PHASE2_DURATION + 50,
       );
     }
 
-    document.addEventListener("astro:before-preparation", startPhase1);
+    function handleClick(ev: MouseEvent) {
+      if (ev.button !== 0) return;
+      if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey) return;
+      if (ev.defaultPrevented) return;
+
+      let link: Element | null = ev.target as Element;
+      if ((ev as any).composed) {
+        link = (ev as any).composedPath()[0];
+      }
+      if (link instanceof Element) {
+        link = link.closest("a, area");
+      }
+      if (!(link instanceof HTMLAnchorElement) && !(link instanceof SVGAElement) && !(link instanceof HTMLAreaElement)) return;
+
+      const linkTarget = link instanceof HTMLElement ? link.target : (link as any).target?.baseVal;
+      const href = link instanceof HTMLElement ? link.href : (link as any).href?.baseVal;
+      const origin = new URL(href, location.href).origin;
+
+      if (!link.href) return;
+      if (linkTarget && linkTarget !== "_self") return;
+      if (origin !== location.origin) return;
+      if (link.hasAttribute("download")) return;
+      if ((link as any).dataset.astroReload !== undefined) return;
+
+      const toUrl = new URL(href, location.href);
+      if (
+        toUrl.pathname === location.pathname &&
+        toUrl.search === location.search &&
+        toUrl.hash
+      ) return;
+
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      const historyMode = (link as any).dataset.astroHistory === "replace" ? "replace" : "auto";
+      pendingNav = { href, history: historyMode as "auto" | "replace" };
+
+      startPhase1();
+    }
+
+    function handlePopState() {
+      pendingNav = null;
+      reset();
+      startPhase1();
+    }
+
+    document.addEventListener("click", handleClick, true);
+    window.addEventListener("popstate", handlePopState);
+
+    document.addEventListener("astro:before-preparation", () => {
+      if (state === STATE_COVERED) return;
+      pendingNav = null;
+      startPhase1();
+    });
     document.addEventListener("astro:after-swap", startPhase2);
     document.addEventListener("astro:page-load", () => {
       const inFlight =
