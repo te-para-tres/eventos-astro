@@ -8,6 +8,9 @@ import { navigate } from "astro:transitions/client";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Evento } from "@/models/Evento.model";
+import { Carrera } from "@/models/Carrera.model";
+import { UnidadAcademica } from "@/models/UnidadAcademica.model";
+import QuerySelector from "@/components/QuerySelector";
 import { Check, Clock, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import dayjs from "dayjs";
@@ -33,6 +36,7 @@ const RegistroEventoView: React.FC = () => {
     resolver: zodResolver(RegistroEventoSchema),
     defaultValues: {
       carrera: "",
+      unidadAcademica: "",
       expediente: "",
       nombre: "",
     }
@@ -224,6 +228,27 @@ const RegistroEventoView: React.FC = () => {
                   />
 
                   <Controller
+                    name="unidadAcademica"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-2" data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="unidadAcademica" required>
+                          Unidad Académica
+                        </FieldLabel>
+                        <QuerySelector<UnidadAcademica>
+                          endpoint={UnidadAcademica.ENDPOINTS.DEFAULT}
+                          placeholder="Selecciona una unidad académica"
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError>{fieldState.error?.message}</FieldError>
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
                     name="carrera"
                     control={form.control}
                     render={({ field, fieldState }) => (
@@ -231,11 +256,11 @@ const RegistroEventoView: React.FC = () => {
                         <FieldLabel htmlFor="carrera" required>
                           Carrera
                         </FieldLabel>
-                        <Input
-                          {...field}
-                          id="carrera"
-                          placeholder="Ej. Ingenieria de Software"
-                          aria-invalid={fieldState.invalid}
+                        <QuerySelector<Carrera>
+                          endpoint={Carrera.ENDPOINTS.DEFAULT}
+                          placeholder="Selecciona una carrera"
+                          value={field.value}
+                          onValueChange={field.onChange}
                         />
                         {fieldState.invalid && (
                           <FieldError>{fieldState.error?.message}</FieldError>
