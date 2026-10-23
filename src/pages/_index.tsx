@@ -1,21 +1,57 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, animate, useInView } from "motion/react";
-import { CalendarDays, Building2, Users, Sparkles, ArrowRight } from "lucide-react";
+import {
+  CalendarDays,
+  Building2,
+  Users,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 
 const IMAGENES = [
-  { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&auto=format", alt: "Conferencia con público" },
-  { src: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80&auto=format", alt: "Concierto universitario" },
-  { src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80&auto=format", alt: "Estudiantes celebrando" },
-  { src: "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=800&q=80&auto=format", alt: "Ponencia en auditorio" },
-  { src: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80&auto=format", alt: "Sala de clases llena" },
-  { src: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80&auto=format", alt: "Festival al aire libre" },
+  {
+    src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&auto=format",
+    alt: "Conferencia con público",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80&auto=format",
+    alt: "Concierto universitario",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80&auto=format",
+    alt: "Estudiantes celebrando",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=800&q=80&auto=format",
+    alt: "Ponencia en auditorio",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80&auto=format",
+    alt: "Sala de clases llena",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80&auto=format",
+    alt: "Festival al aire libre",
+  },
 ];
 
 const DEPARTAMENTOS = [
-  { titulo: "Ingeniería y Tecnología", desc: "Hackatones, ferias de proyectos y charlas de la industria." },
-  { titulo: "Ciencias de la Salud", desc: "Jornadas, talleres clínicos y campañas de bienestar." },
-  { titulo: "Económico-Administrativas", desc: "Foros de emprendimiento, networking y casos reales." },
-  { titulo: "Ciencias Sociales y Humanidades", desc: "Conversatorios, exposiciones y actividades culturales." },
+  {
+    titulo: "Ingeniería y Tecnología",
+    desc: "Hackatones, ferias de proyectos y charlas de la industria.",
+  },
+  {
+    titulo: "Ciencias de la Salud",
+    desc: "Jornadas, talleres clínicos y campañas de bienestar.",
+  },
+  {
+    titulo: "Económico-Administrativas",
+    desc: "Foros de emprendimiento, networking y casos reales.",
+  },
+  {
+    titulo: "Ciencias Sociales y Humanidades",
+    desc: "Conversatorios, exposiciones y actividades culturales.",
+  },
 ];
 
 const ESTADISTICAS = [
@@ -77,8 +113,8 @@ const IndexView: React.FC = () => {
             className="mx-auto max-w-2xl text-lg md:text-xl text-text-muted mb-10"
           >
             Conferencias, talleres, conciertos y actividades de todos los
-            departamentos en un solo lugar. Regístrate, participa y no te pierdas
-            nada de la vida universitaria.
+            departamentos en un solo lugar. Regístrate, participa y no te
+            pierdas nada de la vida universitaria.
           </motion.p>
 
           <motion.div
@@ -138,9 +174,9 @@ const IndexView: React.FC = () => {
         </h2>
         <p className="mx-auto max-w-3xl text-lg text-text-muted">
           Eventues reúne todos los eventos públicos de la Universidad Estatal de
-          Sonora. Explora por campus, categoría o fecha, descubre lo que está por
-          venir e inscríbete en segundos. Tu próxima experiencia universitaria
-          empieza aquí.
+          Sonora. Explora por campus, categoría o fecha, descubre lo que está
+          por venir e inscríbete en segundos. Tu próxima experiencia
+          universitaria empieza aquí.
         </p>
       </motion.section>
 
@@ -156,7 +192,8 @@ const IndexView: React.FC = () => {
           >
             <Building2 className="mx-auto size-12 text-primary mb-6" />
             <h2 className="text-3xl md:text-5xl font-extrabold text-text-main mb-4">
-              Eventos de todos los <span className="text-primary">departamentos</span>
+              Eventos de todos los{" "}
+              <span className="text-primary">departamentos</span>
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-text-muted">
               Cada área de la universidad organiza sus propias actividades.
@@ -178,7 +215,9 @@ const IndexView: React.FC = () => {
                 transition={{ duration: 0.5 }}
                 className="rounded-xl border border-border-custom bg-bg-card p-6 transition-shadow hover:shadow-md"
               >
-                <h3 className="text-lg font-bold text-text-main mb-2">{d.titulo}</h3>
+                <h3 className="text-lg font-bold text-text-main mb-2">
+                  {d.titulo}
+                </h3>
                 <p className="text-sm text-text-muted">{d.desc}</p>
               </motion.div>
             ))}
@@ -211,7 +250,10 @@ const IndexView: React.FC = () => {
 
           <div className="grid gap-12 sm:grid-cols-3 text-center">
             {ESTADISTICAS.map((e) => (
-              <div key={e.etiqueta} className="flex flex-col items-center gap-3">
+              <div
+                key={e.etiqueta}
+                className="flex flex-col items-center gap-3"
+              >
                 <Users className="size-8 text-text-light/80" />
                 <p className="text-5xl md:text-6xl font-extrabold tracking-tight">
                   <CountUp target={e.valor} />
@@ -237,8 +279,8 @@ const IndexView: React.FC = () => {
           ¿Listo para <span className="text-primary">participar</span>?
         </h2>
         <p className="mx-auto max-w-2xl text-lg text-text-muted mb-10">
-          Crea tu cuenta gratis y forma parte de la comunidad. Recibe los eventos
-          que te interesan e inscríbete con un clic.
+          Crea tu cuenta gratis y forma parte de la comunidad. Recibe los
+          eventos que te interesan e inscríbete con un clic.
         </p>
         <a
           href="/registro"
