@@ -1,0 +1,8 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PerfilView from "./_components";
+---
+
+<Layout title="Mi perfil" description="Consulta la información de tu cuenta de estudiante.">
+  <PerfilView client:only="react" />
+</Layout>

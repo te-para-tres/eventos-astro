@@ -1,5 +1,6 @@
 ---
-import { School, LogIn, Menu } from "lucide-react";
+import { School, Menu } from "lucide-react";
+import NavbarSesion from "./NavbarSesion";
 
 interface Props {
   title: string;
@@ -9,7 +10,7 @@ const items = [
   { label: "Inicio", href: "/" },
   { label: "Eventos", href: "/eventos" },
   { label: "Departamentos", href: "/departamentos" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Contacto", href: "/#contacto" },
 ];
 
 const path = Astro.url.pathname;
@@ -65,13 +66,7 @@ const activo = (href: string) =>
     <span class="hidden md:block self-center w-px h-8 bg-border-custom" aria-hidden="true"></span>
 
     <div class="flex items-center gap-2 pl-4 pr-4 ml-auto">
-      <a
-        href="/iniciar-sesion"
-        class="flex items-center gap-2 bg-primary text-white rounded-lg px-4 py-2 text-sm font-semibold transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-      >
-        <LogIn className="w-4 h-4" aria-hidden="true" />
-        <span class="hidden sm:inline">Iniciar sesión</span>
-      </a>
+      <NavbarSesion client:only="react" />
 
       <button
         id="navbar-toggle"

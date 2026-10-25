@@ -11,6 +11,10 @@ export const RegistroEventoSchema = z.object({
     .string({ required_error: "El nombre es obligatorio" })
     .min(1, "El nombre es obligatorio")
     .trim(),
+  unidadAcademica: z
+    .string({ required_error: "La unidad académica es obligatoria" })
+    .min(1, "La unidad académica es obligatoria")
+    .trim(),
   carrera: z
     .string({ required_error: "La carrera es obligatoria" })
     .min(1, "La carrera es obligatoria")

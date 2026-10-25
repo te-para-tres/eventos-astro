@@ -19,6 +19,10 @@ interface Props<T extends ModeloBase> {
   labelKey?: keyof T;
   onValueChange: (v: any) => void;
   optionRender?: (data: T) => React.ReactNode;
+  id?: string;
+  invalid?: boolean;
+  disabled?: boolean;
+  className?: string;
 }
 
 function QuerySelector<T extends ModeloBase>({
@@ -29,6 +33,10 @@ function QuerySelector<T extends ModeloBase>({
   labelKey = "nombre" as keyof T,
   onValueChange,
   optionRender,
+  id,
+  invalid,
+  disabled,
+  className,
 }: Props<T>) {
   const [items, setItems] = React.useState<T[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -63,7 +71,13 @@ function QuerySelector<T extends ModeloBase>({
       isItemEqualToValue={(a, b) => a?.id === b?.id}
       onValueChange={(item) => onValueChange(item?.id ?? "")}
     >
-      <ComboboxInput placeholder={placeholder} disabled={loading} />
+      <ComboboxInput
+        id={id}
+        aria-invalid={invalid || undefined}
+        placeholder={placeholder}
+        disabled={disabled || loading}
+        className={className}
+      />
       <ComboboxContent>
         <ComboboxEmpty>No se encontraron elementos.</ComboboxEmpty>
         <ComboboxList>

@@ -1,5 +1,11 @@
 import { API_URL } from "@/constants";
 import type { DefaultResponse, TPaginacion } from "../types/responded";
+import { $token } from "@/stores/sesion.store";
+
+const authorization = (): Record<string, string> => {
+    const token = $token.get();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export interface IRequestParams {
     expand?: string;
@@ -46,14 +52,14 @@ export class HttpService implements IHttpService {
     static DEFAULT_HEADERS = () => {
         return {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${localStorage.getItem("token")}`,
+            ...authorization(),
         };
     };
 
     static FILE_HEADERS = () => {
         return {
             "Content-Type": "multipart/form-data",
-            // Authorization: `Bearer ${localStorage.getItem("token")}`,
+            ...authorization(),
         };
     };
 

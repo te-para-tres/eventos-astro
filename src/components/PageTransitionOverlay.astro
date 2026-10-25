@@ -1,0 +1,228 @@
+---
+---
+
+<div
+  id="page-transition-overlay"
+  class="page-transition-overlay"
+  aria-hidden="true"
+  transition:persist="page-transition-overlay"
+>
+  <div class="page-transition-bar" style="background-color: #2a0814;"></div>
+  <div class="page-transition-bar" style="background-color: #3d0e1f;"></div>
+  <div class="page-transition-bar" style="background-color: #561429;"></div>
+  <div class="page-transition-bar" style="background-color: #731C38;"></div>
+  <div class="page-transition-bar" style="background-color: #8f2347;"></div>
+  <div class="page-transition-bar" style="background-color: #b54e6f;"></div>
+  <div class="page-transition-bar" style="background-color: #e8a8bc;"></div>
+</div>
+
+<style>
+  .page-transition-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .page-transition-bar {
+    flex: 1;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 900ms cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform, border-radius;
+  }
+
+  .page-transition-bar.phase1-in {
+    transform: scaleX(1);
+  }
+
+  .page-transition-bar.phase2-out {
+    transform: scaleX(0);
+    transform-origin: right center;
+    border-top-left-radius: 90px;
+    border-bottom-left-radius: 90px;
+    transition:
+      transform 900ms cubic-bezier(0.55, 0.05, 0.35, 0.95),
+      border-radius 900ms cubic-bezier(0.55, 0.05, 0.35, 0.95);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-transition-overlay {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { navigate } from "astro:transitions/client";
+
+  (() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if ((window as any).__pageTransitionOverlayLoaded) return;
+    (window as any).__pageTransitionOverlayLoaded = true;
+
+    const STATE_IDLE = "idle";
+    const STATE_COVERING = "covering";
+    const STATE_COVERED = "covered";
+    const STATE_REVEALING = "revealing";
+
+    const PHASE1_STAGGER = 50;
+    const PHASE1_DURATION = 900;
+    const PHASE2_STAGGER = 50;
+    const PHASE2_DURATION = 900;
+
+    let state: string = STATE_IDLE;
+    let phase1Timers: any[] = [];
+    let phase2Timers: any[] = [];
+    let cleanupTimer: any = null;
+    let pendingNav: { href: string; history: "auto" | "replace" } | null = null;
+
+    function getBars(): HTMLElement[] {
+      const overlay = document.getElementById("page-transition-overlay");
+      if (!overlay) return [];
+      return Array.from(overlay.querySelectorAll(".page-transition-bar"));
+    }
+
+    function clearAllTimers() {
+      phase1Timers.forEach(clearTimeout);
+      phase2Timers.forEach(clearTimeout);
+      phase1Timers = [];
+      phase2Timers = [];
+      if (cleanupTimer) {
+        clearTimeout(cleanupTimer);
+        cleanupTimer = null;
+      }
+    }
+
+    function reset() {
+      const bars = getBars();
+      bars.forEach((bar) => {
+        bar.classList.remove("phase1-in", "phase2-out");
+      });
+      clearAllTimers();
+      state = STATE_IDLE;
+    }
+
+    function firePendingNav() {
+      if (!pendingNav) return;
+      const nav = pendingNav;
+      pendingNav = null;
+      navigate(nav.href, { history: nav.history });
+    }
+
+    function startPhase1() {
+      if (state === STATE_COVERED) return;
+      if (state !== STATE_IDLE) reset();
+
+      const bars = getBars();
+      if (bars.length === 0) return;
+
+      state = STATE_COVERING;
+      bars.forEach((bar, i) => {
+        const t = setTimeout(() => {
+          if (state === STATE_COVERING) bar.classList.add("phase1-in");
+        }, i * PHASE1_STAGGER);
+        phase1Timers.push(t);
+      });
+
+      const doneT = setTimeout(() => {
+        if (state === STATE_COVERING) {
+          state = STATE_COVERED;
+          firePendingNav();
+        }
+      }, (bars.length - 1) * PHASE1_STAGGER + PHASE1_DURATION);
+      phase1Timers.push(doneT);
+    }
+
+    function startPhase2() {
+      const bars = getBars();
+      if (bars.length === 0) return;
+
+      if (state === STATE_COVERING) state = STATE_COVERED;
+      if (state !== STATE_COVERED) return;
+
+      state = STATE_REVEALING;
+      bars.forEach((bar, i) => {
+        const t = setTimeout(() => {
+          if (state === STATE_REVEALING) bar.classList.add("phase2-out");
+        }, i * PHASE2_STAGGER);
+        phase2Timers.push(t);
+      });
+
+      cleanupTimer = setTimeout(
+        () => {
+          reset();
+        },
+        (bars.length - 1) * PHASE2_STAGGER + PHASE2_DURATION + 50,
+      );
+    }
+
+    function handleClick(ev: MouseEvent) {
+      if (ev.button !== 0) return;
+      if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey) return;
+      if (ev.defaultPrevented) return;
+
+      let link: Element | null = ev.target as Element;
+      if ((ev as any).composed) {
+        link = (ev as any).composedPath()[0];
+      }
+      if (link instanceof Element) {
+        link = link.closest("a, area");
+      }
+      if (!(link instanceof HTMLAnchorElement) && !(link instanceof SVGAElement) && !(link instanceof HTMLAreaElement)) return;
+
+      const linkTarget = link instanceof HTMLElement ? link.target : (link as any).target?.baseVal;
+      const href = link instanceof HTMLElement ? link.href : (link as any).href?.baseVal;
+      const origin = new URL(href, location.href).origin;
+
+      if (!link.href) return;
+      if (linkTarget && linkTarget !== "_self") return;
+      if (origin !== location.origin) return;
+      if (link.hasAttribute("download")) return;
+      if ((link as any).dataset.astroReload !== undefined) return;
+
+      const toUrl = new URL(href, location.href);
+      if (
+        toUrl.pathname === location.pathname &&
+        toUrl.search === location.search &&
+        toUrl.hash
+      ) return;
+
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      const historyMode = (link as any).dataset.astroHistory === "replace" ? "replace" : "auto";
+      pendingNav = { href, history: historyMode as "auto" | "replace" };
+
+      startPhase1();
+    }
+
+    function handlePopState() {
+      pendingNav = null;
+      reset();
+      startPhase1();
+    }
+
+    document.addEventListener("click", handleClick, true);
+    window.addEventListener("popstate", handlePopState);
+
+    document.addEventListener("astro:before-preparation", () => {
+      if (state === STATE_COVERED) return;
+      pendingNav = null;
+      startPhase1();
+    });
+    document.addEventListener("astro:after-swap", startPhase2);
+    document.addEventListener("astro:page-load", () => {
+      const inFlight =
+        state === STATE_COVERING ||
+        state === STATE_COVERED ||
+        state === STATE_REVEALING;
+      if (!inFlight && state !== STATE_IDLE) reset();
+    });
+
+    reset();
+  })();
+</script>
